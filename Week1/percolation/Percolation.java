@@ -58,10 +58,8 @@ public class Percolation {
         int row;
         int col;
 
-        int ixGrid = ix - 1;
-
-        row = ixGrid / size + 1;
-        col = ixGrid - size * row;
+        row = ix / size + 1;
+        col = ix - (row - 1) * size;
 
         Integer[] coord = { row, col };
 
@@ -84,8 +82,8 @@ public class Percolation {
         return ix;
     }
 
-    public void open(int row, int col) // open site (row, col) if it is not open already
-    {
+    private void validateIndexRange(int row, int col) {
+
         if (row < 0 || row > size + 1) {
             throw new java.lang.IllegalArgumentException("Row index outside the range");
         }
@@ -93,6 +91,13 @@ public class Percolation {
         if (col < 1 || col > size) {
             throw new java.lang.IllegalArgumentException("Column index outside the range");
         }
+
+    }
+
+    // open site (row, col) if it is not open already
+    public void open(int row, int col) {
+
+        validateIndexRange(row, col);
 
         // Get the cell index
         int ix = getGridIndex(row, col);
@@ -106,13 +111,7 @@ public class Percolation {
 
     public boolean isOpen(int row, int col) // is site (row, col) open?
     {
-        if (row < 0 || row > size + 1) {
-            throw new java.lang.IllegalArgumentException("Row index outside the range");
-        }
-
-        if (col < 1 || col > size) {
-            throw new java.lang.IllegalArgumentException("Column index outside the range");
-        }
+        validateIndexRange(row, col);
 
         int ix = getGridIndex(row, col);
 
@@ -123,13 +122,7 @@ public class Percolation {
 
     public boolean isFull(int row, int col) // is site (row, col) full?
     {
-        if (row < 0 || row > size + 1) {
-            throw new java.lang.IllegalArgumentException("Row index outside the range");
-        }
-
-        if (col < 1 || col > size) {
-            throw new java.lang.IllegalArgumentException("Column index outside the range");
-        }
+        validateIndexRange(row, col);
 
         int ix = getGridIndex(row, col);
 
