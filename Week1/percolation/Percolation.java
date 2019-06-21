@@ -12,9 +12,10 @@ import java.util.Arrays;
 public class Percolation {
 
     private int size;
-    private int N;
+    private int numberOfCells;
     private WeightedQuickUnionUF uf;
-    private Boolean[] cellState;
+    private Boolean[] cellIsOpen;
+    private int numberOfOpenCells;
 
     public Percolation(int n) // create n-by-n grid, with all sites blocked
     {
@@ -24,16 +25,22 @@ public class Percolation {
         }
         // Size of the grid
         size = n;
+
         // Total number of cells: grid plus two virtual ones
-        N = n * n + 2;
-        // Instantiate the UF with N cells
-        uf = new WeightedQuickUnionUF(N);
+        numberOfCells = n * n + 2;
+
+        // Instantiate the UF with numberOfCells cells
+        uf = new WeightedQuickUnionUF(numberOfCells);
+
         // Create an array that keeps track of the cell states (open/closed)
         // Initialize all cells as closed (aka blocked)
-        Boolean[] cellState = new Boolean[N];
-        Arrays.fill(cellState, Boolean.FALSE);
+        cellIsOpen = new Boolean[numberOfCells];
+        Arrays.fill(cellIsOpen, Boolean.FALSE);
+
         // Open the virtual-top cell
-        cellState[0] = true;
+        cellIsOpen[0] = true;
+
+        numberOfOpenCells = 0; // The virtual-top cell doesn't count
     }
 
     private Integer[] getGridCoordinates(int ix) {
@@ -43,7 +50,7 @@ public class Percolation {
             return coord;
         }
 
-        if (ix == N - 1) { // virtual-bottom
+        if (ix == numberOfCells - 1) { // virtual-bottom
             Integer[] coord = { size + 1, size };
             return coord;
         }
@@ -69,7 +76,7 @@ public class Percolation {
         }
 
         if (row == size + 1) {
-            return N - 1;
+            return numberOfCells - 1;
         }
 
         ix = size * (row - 1) + col;
@@ -86,6 +93,15 @@ public class Percolation {
         if (col < 1 || col > size) {
             throw new java.lang.IllegalArgumentException("Column index outside the range");
         }
+
+        // Get the cell index
+        int ix = getGridIndex(row, col);
+        // Switch the cell state to OPEN
+        cellIsOpen[ix] = true;
+        // Keep track of how many are open
+        numberOfOpenCells += 1;
+        //
+
     }
 
     public boolean isOpen(int row, int col) // is site (row, col) open?
@@ -100,9 +116,9 @@ public class Percolation {
 
         int ix = getGridIndex(row, col);
 
-        boolean isOp = uf.
+        boolean isOp = cellIsOpen[ix];
 
-        return false;
+        return isOp;
     }
 
     public boolean isFull(int row, int col) // is site (row, col) full?
@@ -115,17 +131,22 @@ public class Percolation {
             throw new java.lang.IllegalArgumentException("Column index outside the range");
         }
 
-        return false;
+        int ix = getGridIndex(row, col);
+
+        boolean isConnected = uf.connected(0, ix);
+
+        return isConnected;
     }
 
     public int numberOfOpenSites() // number of open sites
     {
-        return 0;
+        return numberOfOpenCells;
     }
 
     public boolean percolates() // does the system percolate?
     {
-        return false;
+        boolean perc = uf.connected(0, numberOfCells - 1);
+        return perc;
     }
 
     // test client (optional)
