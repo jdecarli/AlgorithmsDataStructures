@@ -16,6 +16,8 @@ public class Percolation {
     private WeightedQuickUnionUF uf;
     private Boolean[] cellIsOpen;
     private int numberOfOpenCells;
+    private int ixVirtualTop;
+    private int ixVirtualBottom;
 
     public Percolation(int n) // create n-by-n grid, with all sites blocked
     {
@@ -28,6 +30,10 @@ public class Percolation {
 
         // Total number of cells: grid plus two virtual ones
         numberOfCells = n * n + 2;
+
+        // Set the indices for the virtual top/bottom sites (cells):
+        ixVirtualTop = 0;
+        ixVirtualBottom = numberOfCells - 1;
 
         // Instantiate the UF with numberOfCells cells
         uf = new WeightedQuickUnionUF(numberOfCells);
@@ -45,12 +51,12 @@ public class Percolation {
 
     private Integer[] getGridCoordinates(int ix) {
 
-        if (ix == 0) { // virtual-top
+        if (ix == ixVirtualTop) { // virtual-top
             Integer[] coord = { 0, 1 };
             return coord;
         }
 
-        if (ix == numberOfCells - 1) { // virtual-bottom
+        if (ix == ixVirtualBottom) { // virtual-bottom
             Integer[] coord = { size + 1, size };
             return coord;
         }
@@ -70,11 +76,11 @@ public class Percolation {
         int ix;
 
         if (row == 0) {
-            return 0;
+            return ixVirtualTop;
         }
 
         if (row == size + 1) {
-            return numberOfCells - 1;
+            return ixVirtualBottom;
         }
 
         ix = size * (row - 1) + col;
