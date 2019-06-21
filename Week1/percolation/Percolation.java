@@ -6,23 +6,25 @@
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-import java.util.Arrays;
-
 
 public class Percolation {
 
     private int size;
     private int numberOfCells;
     private WeightedQuickUnionUF uf;
-    private Boolean[] cellIsOpen;
+    private boolean[] cellIsOpen;
     private int numberOfOpenCells;
+
+    // -----------------------------------
+    // To Implement:
+    // - Move validation
+    // - Add open method validations
+    // -----------------------------------
 
     public Percolation(int n) // create n-by-n grid, with all sites blocked
     {
-        if (n < 0) {
-            throw new java.lang.IllegalArgumentException(
-                    "The grid size must be a positive integer!");
-        }
+        validateInput(n);
+
         // Size of the grid
         size = n;
 
@@ -34,8 +36,8 @@ public class Percolation {
 
         // Create an array that keeps track of the cell states (open/closed)
         // Initialize all cells as closed (aka blocked)
-        cellIsOpen = new Boolean[numberOfCells];
-        Arrays.fill(cellIsOpen, Boolean.FALSE);
+        cellIsOpen = new boolean[numberOfCells];
+        fillArray(cellIsOpen, false); // Replacing Arrays.fill(cellIsOpen, Boolean.FALSE);
 
         // Open the virtual-top cell
         cellIsOpen[0] = true;
@@ -86,13 +88,7 @@ public class Percolation {
 
     public void open(int row, int col) // open site (row, col) if it is not open already
     {
-        if (row < 0 || row > size + 1) {
-            throw new java.lang.IllegalArgumentException("Row index outside the range");
-        }
-
-        if (col < 1 || col > size) {
-            throw new java.lang.IllegalArgumentException("Column index outside the range");
-        }
+        validateInput(row, col);
 
         // Get the cell index
         int ix = getGridIndex(row, col);
@@ -100,19 +96,43 @@ public class Percolation {
         cellIsOpen[ix] = true;
         // Keep track of how many are open
         numberOfOpenCells += 1;
-        //
 
+        // Check neighbours (needs refactor - just for first run)
+        /// faucet and sink
+        if (row == 1) // virtual top
+            uf.union(ix, getGridIndex(0, 1));
+
+        if (row == size) // virtual bottom
+            uf.union(ix, getGridIndex(size + 1, size));
+
+        /// up
+        if (row > 1) {
+            uf.union(ix, getGridIndex(row - 1, col));
+            numberOfOpenCells++;
+        }
+
+        /// down
+        if (row < size) {
+            uf.union(ix, getGridIndex(row + 1, col));
+            numberOfOpenCells++;
+        }
+
+        /// left
+        if (col > 1) {
+            uf.union(ix, getGridIndex(row, col - 1));
+            numberOfOpenCells++;
+        }
+
+        /// right
+        if (col < size) {
+            uf.union(ix, getGridIndex(row, col + 1));
+            numberOfOpenCells++;
+        }
     }
 
     public boolean isOpen(int row, int col) // is site (row, col) open?
     {
-        if (row < 0 || row > size + 1) {
-            throw new java.lang.IllegalArgumentException("Row index outside the range");
-        }
-
-        if (col < 1 || col > size) {
-            throw new java.lang.IllegalArgumentException("Column index outside the range");
-        }
+        validateInput(row, col);
 
         int ix = getGridIndex(row, col);
 
@@ -123,13 +143,7 @@ public class Percolation {
 
     public boolean isFull(int row, int col) // is site (row, col) full?
     {
-        if (row < 0 || row > size + 1) {
-            throw new java.lang.IllegalArgumentException("Row index outside the range");
-        }
-
-        if (col < 1 || col > size) {
-            throw new java.lang.IllegalArgumentException("Column index outside the range");
-        }
+        validateInput(row, col);
 
         int ix = getGridIndex(row, col);
 
@@ -147,6 +161,29 @@ public class Percolation {
     {
         boolean perc = uf.connected(0, numberOfCells - 1);
         return perc;
+    }
+
+    // Private methods
+    private void validateInput(int n) {
+        if (n < 0) {
+            throw new java.lang.IllegalArgumentException(
+                    "The grid size must be a positive integer!");
+        }
+    }
+
+    private void validateInput(int row, int col) {
+        if (row < 0 || row > size + 1) {
+            throw new java.lang.IllegalArgumentException("Row index outside the range");
+        }
+
+        if (col < 1 || col > size) {
+            throw new java.lang.IllegalArgumentException("Column index outside the range");
+        }
+    }
+
+    private void fillArray(boolean[] grid, boolean value) {
+        for (int i = 0; i < grid.length; i++)
+            grid[i] = value;
     }
 
     // test client (optional)
