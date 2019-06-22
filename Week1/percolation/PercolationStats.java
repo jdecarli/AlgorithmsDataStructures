@@ -1,7 +1,7 @@
 /* *****************************************************************************
- *  Name:
+ *  Name: KB & JDC
  *  Date:
- *  Description:
+ *  Description: Programming Assignment 1: PercolationStats
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.StdRandom;
@@ -10,45 +10,25 @@ public class PercolationStats {
 
     private int size;
     private int nTrials;
+    private int numberOfCells;
+    private int ixVirtualTop;
+    private int ixVirtualBottom;
 
     public PercolationStats(int n,
                             int trials)    // perform trials independent experiments on an n-by-n grid
     {
+        // Size of the grid
         size = n;
+        // Number of the MC trials
         nTrials = trials;
 
-    }
+        // Total number of cells: grid plus two virtual ones
+        numberOfCells = n * n + 2;
 
-    private int[] getShuffledIndexList(int n) {
-        // Get the array length
-        int numberOfGridCells = n * n;
+        // Set the indices for the virtual top/bottom sites (cells):
+        ixVirtualTop = 0;
+        ixVirtualBottom = numberOfCells - 1;
 
-        // Build a list of cell indices
-        int[] ixList = new int[numberOfGridCells];
-        for (int i = 0; i < numberOfGridCells; i++) {
-            ixList[i] = i + 1;
-        }
-        // Instantiate a random generator
-        // StdRandom r = new StdRandom();
-
-        // Shuffle the index list
-        StdRandom.shuffle(ixList);
-
-        return ixList;
-    }
-
-    private double runNewTrial() {
-        /*
-         * Run a new independent trial. Create a new grid and keep opening
-         * sites until it percolates. When it does, get the number of
-         * open sites and estimate the probability for a site to be open.
-         *
-         * @return probability for a site to be open*/
-
-        // Instantiate a new grid for this trial
-        Percolation grid = new Percolation(size);
-
-        return 0.0;
     }
 
     public double mean()                          // sample mean of percolation threshold
@@ -74,6 +54,86 @@ public class PercolationStats {
 
     public static void main(String[] args)        // test client (described below)
     {
+        /*
+         * Private Methods
+         */
+    }
 
+    private int[] getGridCoordinates(int ix) {
+        /**
+         * Converts the flat index of the grid to a
+         * (row, col) pair of coordinates.
+         * @param (int) ix: flat grid index
+         * @return (int[]) (row, col)
+         */
+
+        if (ix == ixVirtualTop) { // virtual-top
+            int[] coord = { 0, 1 };
+            return coord;
+        }
+
+        if (ix == ixVirtualBottom) { // virtual-bottom
+            int[] coord = { size + 1, size };
+            return coord;
+        }
+
+        int row;
+        int col;
+
+        row = ix / size + 1;
+        col = ix - (row - 1) * size;
+
+        int[] coord = { row, col };
+
+        return coord;
+    }
+
+    private int[] getShuffledIndexList(int n) {
+        // Get the array length
+        int numberOfGridCells = n * n;
+
+        // Build a list of cell indices
+        int[] ixList = new int[numberOfGridCells];
+        for (int i = 0; i < numberOfGridCells; i++) {
+            ixList[i] = i + 1;
+        }
+
+        // Shuffle the index list
+        StdRandom.shuffle(ixList);
+
+        return ixList;
+    }
+
+    private double runNewTrial() {
+        /*
+         * Run a new independent trial. Create a new grid and keep opening
+         * sites until it percolates. When it does, get the number of
+         * open sites and estimate the probability for a site to be open.
+         *
+         * @return probability for a site to be open*/
+
+        // Instantiate a new grid for this trial
+        Percolation grid = new Percolation(size);
+
+        // Get a shuffled index list
+        int[] ixListShuffled = getShuffledIndexList(size);
+
+        // Loop through all cells randomly.
+        // Keep opening them until the grid percolates
+        int i = 0;
+        while (!grid.percolates() && i < ixListShuffled.length) {
+            // Select a random cell...
+            int[] gridCoord = getGridCoordinates(ixListShuffled[i]);
+            int row = gridCoord[0];
+            int col = gridCoord[1];
+            // ... and open it
+            grid.open(row, col);
+
+            i++;
+        }
+        // Estimate the probability for a site to be open
+        double prob = ((double) grid.numberOfOpenSites()) / (size * size);
+
+        return prob;
     }
 }
