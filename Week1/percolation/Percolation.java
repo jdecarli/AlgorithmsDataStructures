@@ -14,12 +14,8 @@ public class Percolation {
     private WeightedQuickUnionUF uf;
     private boolean[] cellIsOpen;
     private int numberOfOpenCells;
-
-    // -----------------------------------
-    // To Implement:
-    // - Move validation
-    // - Add open method validations
-    // -----------------------------------
+    private int ixVirtualTop;
+    private int ixVirtualBottom;
 
     public Percolation(int n) // create n-by-n grid, with all sites blocked
     {
@@ -31,13 +27,17 @@ public class Percolation {
         // Total number of cells: grid plus two virtual ones
         numberOfCells = n * n + 2;
 
+        // Set the indices for the virtual top/bottom sites (cells):
+        ixVirtualTop = 0;
+        ixVirtualBottom = numberOfCells - 1;
+
         // Instantiate the UF with numberOfCells cells
         uf = new WeightedQuickUnionUF(numberOfCells);
 
         // Create an array that keeps track of the cell states (open/closed)
         // Initialize all cells as closed (aka blocked)
         cellIsOpen = new boolean[numberOfCells];
-        fillArray(cellIsOpen, false); // Replacing Arrays.fill(cellIsOpen, Boolean.FALSE);
+        fillArray(cellIsOpen, false); // Arrays.fill(cellIsOpen, Boolean.FALSE);
 
         // Open the virtual-top cell
         cellIsOpen[0] = true;
@@ -45,27 +45,25 @@ public class Percolation {
         numberOfOpenCells = 0; // The virtual-top cell doesn't count
     }
 
-    private Integer[] getGridCoordinates(int ix) {
+    private int[] getGridCoordinates(int ix) {
 
-        if (ix == 0) { // virtual-top
-            Integer[] coord = { 0, 1 };
+        if (ix == ixVirtualTop) { // virtual-top
+            int[] coord = { 0, 1 };
             return coord;
         }
 
-        if (ix == numberOfCells - 1) { // virtual-bottom
-            Integer[] coord = { size + 1, size };
+        if (ix == ixVirtualBottom) { // virtual-bottom
+            int[] coord = { size + 1, size };
             return coord;
         }
 
         int row;
         int col;
 
-        int ixGrid = ix - 1;
+        row = ix / size + 1;
+        col = ix - (row - 1) * size;
 
-        row = ixGrid / size + 1;
-        col = ixGrid - size * row;
-
-        Integer[] coord = { row, col };
+        int[] coord = { row, col };
 
         return coord;
     }
@@ -74,11 +72,11 @@ public class Percolation {
         int ix;
 
         if (row == 0) {
-            return 0;
+            return ixVirtualTop;
         }
 
         if (row == size + 1) {
-            return numberOfCells - 1;
+            return ixVirtualBottom;
         }
 
         ix = size * (row - 1) + col;
@@ -100,33 +98,29 @@ public class Percolation {
         // Check neighbours (needs refactor - just for first run)
         /// faucet and sink
         if (row == 1) // virtual top
-            uf.union(ix, getGridIndex(0, 1));
+            uf.union(ix, getGridIndex(0, 1)); //<-- replace with constants
 
         if (row == size) // virtual bottom
-            uf.union(ix, getGridIndex(size + 1, size));
+            uf.union(ix, getGridIndex(size + 1, size)); //<-- replace with constants
 
         /// up
-        if (row > 1) {
+        if (row > 1 && cellIsOpen[getGridIndex(row - 1, col)]) {
             uf.union(ix, getGridIndex(row - 1, col));
-            numberOfOpenCells++;
         }
 
         /// down
-        if (row < size) {
+        if (row < size && cellIsOpen[getGridIndex(row + 1, col)]) {
             uf.union(ix, getGridIndex(row + 1, col));
-            numberOfOpenCells++;
         }
 
         /// left
-        if (col > 1) {
+        if (col > 1 && cellIsOpen[getGridIndex(row, col - 1)]) {
             uf.union(ix, getGridIndex(row, col - 1));
-            numberOfOpenCells++;
         }
 
         /// right
-        if (col < size) {
+        if (col < size && cellIsOpen[getGridIndex(row, col + 1)]) {
             uf.union(ix, getGridIndex(row, col + 1));
-            numberOfOpenCells++;
         }
     }
 
@@ -188,6 +182,6 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
-
+        System.out.println("test");
     }
 }

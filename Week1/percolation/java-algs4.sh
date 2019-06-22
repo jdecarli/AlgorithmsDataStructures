@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # echo "argument is: " $1
-java -cp ".lift/algs4.jar" $1
+javac -cp ".lift/algs4.jar" $1
 
 # ---------------------------------------------
 # This must match the install directory
