@@ -98,10 +98,10 @@ public class Percolation {
         // Check neighbors (needs refactor - just for first run)
         /// faucet and sink
         if (row == 1) // virtual top
-            uf.union(ix, getGridIndex(0, 1)); //<-- replace with constants
+            uf.union(ix, ixVirtualTop); //<-- replace with constants
 
         if (row == size) // virtual bottom
-            uf.union(ix, getGridIndex(size + 1, size)); //<-- replace with constants
+            uf.union(ix, ixVirtualBottom); //<-- replace with constants
 
         /// up
         if (row > 1 && cellIsOpen[getGridIndex(row - 1, col)]) {
