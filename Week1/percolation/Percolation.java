@@ -95,7 +95,7 @@ public class Percolation {
         // Keep track of how many are open
         numberOfOpenCells += 1;
 
-        // Check neighbours (needs refactor - just for first run)
+        // Check neighbors (needs refactor - just for first run)
         /// faucet and sink
         if (row == 1) // virtual top
             uf.union(ix, getGridIndex(0, 1)); //<-- replace with constants
