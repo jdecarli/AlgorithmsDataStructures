@@ -34,22 +34,20 @@ public class PercolationStats {
 
         this.runAllTrials();
 
-        estimatedMean = this.mean();
+        estimatedMean = StdStats.mean(probList);
 
-        estimatedStd = this.stddev();
+        estimatedStd = StdStats.stddev(probList);
 
     }
 
     public double mean()                          // sample mean of percolation threshold
     {
-        double m = StdStats.mean(probList);
-        return m;
+        return estimatedMean;
     }
 
     public double stddev()                        // sample standard deviation of percolation threshold
     {
-        double s = StdStats.stddev(probList);
-        return s;
+        return estimatedStd;
     }
 
     public double confidenceLo()                  // low  endpoint of 95% confidence interval
