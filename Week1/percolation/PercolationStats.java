@@ -62,7 +62,7 @@ public class PercolationStats {
          * Private Methods
          */
         // Debug mode
-        isDebugMode = false;
+        isDebugMode = true;
 
         System.out.println("Started... (DebugMode: " + isDebugMode + ")\n");
         Stopwatch stopwatch = new Stopwatch();
@@ -84,23 +84,19 @@ public class PercolationStats {
          * @param (int) ix: flat grid index
          * @return (int[]) (row, col)
          */
-
-        if (ix == ixVirtualTop) { // virtual-top
-            int[] coord = { 0, 1 };
-            return coord;
-        }
-
-        if (ix == ixVirtualBottom) { // virtual-bottom
-            int[] coord = { size + 1, size };
-            return coord;
-        }
+        
 
         int row;
         int col;
 
-        row = ix / size + 1;
-        // col = ix - (row - 1) * size;
-        col = ix - (row - 1) * size + 1; // index is 1 based
+        if (ix % size == 0) { // last column
+            row = ix / size;
+        }
+        else {
+            row = ix / size + 1;
+        }
+
+        col = ix - (row - 1) * size;
 
         int[] coord = { row, col };
 
