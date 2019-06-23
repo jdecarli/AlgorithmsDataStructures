@@ -5,17 +5,16 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.Stopwatch;
 
 public class PercolationStats {
     // enable/disable debug mode
     private static boolean isDebugMode;
-    private static int nTrials = 0;
 
     private int size;
-    private int numberOfCells;
-    private int ixVirtualTop;
-    private int ixVirtualBottom;
+    private int nTrials;
+    private double[] probList;
 
     public PercolationStats(int n,
                             int trials)    // perform trials independent experiments on an n-by-n grid
@@ -24,36 +23,43 @@ public class PercolationStats {
 
         // Size of the grid
         size = n;
+
         // Number of the MC trials
         nTrials = trials;
 
-        // Total number of cells: grid plus two virtual ones
-        numberOfCells = n * n + 2;
+        // Instantiate the array
+        probList = new double[nTrials];
 
-        // Set the indices for the virtual top/bottom sites (cells):
-        ixVirtualTop = 0;
-        ixVirtualBottom = numberOfCells - 1;
+        this.runAllTrials();
+
     }
 
     public double mean()                          // sample mean of percolation threshold
     {
-        return 0.0;
+        double m = StdStats.mean(probList);
+        return m;
     }
 
     public double stddev()                        // sample standard deviation of percolation threshold
     {
-
-        return 0.0;
+        double s = StdStats.stddev(probList);
+        return s;
     }
 
     public double confidenceLo()                  // low  endpoint of 95% confidence interval
     {
-        return 0.0;
+        double m = StdStats.mean(probList);
+        double s = StdStats.stddev(probList);
+        double lo = m - 1.96 * s / Math.sqrt(nTrials);
+        return lo;
     }
 
     public double confidenceHi()                  // high endpoint of 95% confidence interval
     {
-        return 0.0;
+        double m = StdStats.mean(probList);
+        double s = StdStats.stddev(probList);
+        double hi = m + 1.96 * s / Math.sqrt(nTrials);
+        return hi;
     }
 
     public static void main(String[] args)        // test client (described below)
@@ -62,7 +68,7 @@ public class PercolationStats {
          * Private Methods
          */
         // Debug mode
-        isDebugMode = true;
+        isDebugMode = false;
 
         System.out.println("Started... (DebugMode: " + isDebugMode + ")\n");
         Stopwatch stopwatch = new Stopwatch();
@@ -71,8 +77,12 @@ public class PercolationStats {
         PercolationStats stats = new PercolationStats(Integer.parseInt(args[0]),
                                                       Integer.parseInt(args[1]));
 
-        for (int i = 0; i < nTrials; i++)
-            stats.runNewTrial();
+        // stats.runAllTrials();
+        System.out.println("mean                                = " + stats.mean());
+        System.out.println("stddev                              = " + stats.stddev());
+        System.out.println(
+                "95% confidence interval             = [" + stats.confidenceLo() + ", " + stats
+                        .confidenceHi() + "]");
 
         System.out.println("\nElapsed time: " + stopwatch.elapsedTime());
     }
@@ -84,7 +94,7 @@ public class PercolationStats {
          * @param (int) ix: flat grid index
          * @return (int[]) (row, col)
          */
-        
+
 
         int row;
         int col;
@@ -120,6 +130,12 @@ public class PercolationStats {
         StdRandom.shuffle(ixList);
 
         return ixList;
+    }
+
+    private void runAllTrials() {
+        for (int i = 0; i < nTrials; i++) {
+            probList[i] = runNewTrial();
+        }
     }
 
     private double runNewTrial() {
@@ -166,6 +182,10 @@ public class PercolationStats {
         }
         // Estimate the probability for a site to be open
         double prob = ((double) grid.numberOfOpenSites()) / (size * size);
+
+        if (isDebugMode) {
+            System.out.println("Estimated Probability: " + prob);
+        }
 
         return prob;
     }
