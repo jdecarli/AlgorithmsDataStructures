@@ -15,6 +15,8 @@ public class PercolationStats {
     private int size;
     private int nTrials;
     private double[] probList;
+    private double estimatedMean;
+    private double estimatedStd;
 
     public PercolationStats(int n,
                             int trials)    // perform trials independent experiments on an n-by-n grid
@@ -32,6 +34,10 @@ public class PercolationStats {
 
         this.runAllTrials();
 
+        estimatedMean = this.mean();
+
+        estimatedStd = this.stddev();
+
     }
 
     public double mean()                          // sample mean of percolation threshold
@@ -48,17 +54,13 @@ public class PercolationStats {
 
     public double confidenceLo()                  // low  endpoint of 95% confidence interval
     {
-        double m = StdStats.mean(probList);
-        double s = StdStats.stddev(probList);
-        double lo = m - 1.96 * s / Math.sqrt(nTrials);
+        double lo = estimatedMean - 1.96 * estimatedStd / Math.sqrt(nTrials);
         return lo;
     }
 
     public double confidenceHi()                  // high endpoint of 95% confidence interval
     {
-        double m = StdStats.mean(probList);
-        double s = StdStats.stddev(probList);
-        double hi = m + 1.96 * s / Math.sqrt(nTrials);
+        double hi = estimatedMean + 1.96 * estimatedStd / Math.sqrt(nTrials);
         return hi;
     }
 
