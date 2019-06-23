@@ -165,14 +165,14 @@ public class Percolation {
 
     // Private methods
     private void validateInput(int n) {
-        if (n < 0) {
+        if (n < 1) {
             throw new java.lang.IllegalArgumentException(
                     "The grid size must be a positive integer!");
         }
     }
 
     private void validateInput(int row, int col) {
-        if (row < 0 || row > size + 1) {
+        if (row < 1 || row > size) {
             throw new java.lang.IllegalArgumentException("Row index outside the range");
         }
 
