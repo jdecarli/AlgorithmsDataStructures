@@ -139,7 +139,7 @@ public class PercolationStats {
     }
 
     private double runNewTrial() {
-        /*
+        /**
          * Run a new independent trial. Create a new grid and keep opening
          * sites until it percolates. When it does, get the number of
          * open sites and estimate the probability for a site to be open.
