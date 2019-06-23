@@ -90,6 +90,12 @@ public class Percolation {
 
         // Get the cell index
         int ix = getGridIndex(row, col);
+
+        if (cellIsOpen[ix]) {
+            // If it is already open, then just quit
+            return;
+        }
+
         // Switch the cell state to OPEN
         cellIsOpen[ix] = true;
         // Keep track of how many are open
