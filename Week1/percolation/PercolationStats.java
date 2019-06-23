@@ -17,6 +17,8 @@ public class PercolationStats {
     public PercolationStats(int n,
                             int trials)    // perform trials independent experiments on an n-by-n grid
     {
+        validateInput(n, trials);
+
         // Size of the grid
         size = n;
         // Number of the MC trials
@@ -57,6 +59,8 @@ public class PercolationStats {
         /*
          * Private Methods
          */
+        System.out.println("Started...");
+        // System.out.println("Args: " + args[0] + "," + args[1]);
     }
 
     private int[] getGridCoordinates(int ix) {
@@ -135,5 +139,12 @@ public class PercolationStats {
         double prob = ((double) grid.numberOfOpenSites()) / (size * size);
 
         return prob;
+    }
+
+    private void validateInput(int n, int trials) {
+        if (n <= 0 || trials <= 0) {
+            throw new java.lang.IllegalArgumentException(
+                    "The grid size must be a positive integer!");
+        }
     }
 }
