@@ -7,39 +7,131 @@
 import java.util.Iterator;
 
 public class Deque<Item> implements Iterable<Item> {
+    private Node first;
+    private Node last;
+    private int size;
+
+    // helper linked list class
+    private class Node {
+        private Item item;
+        private Node next;
+    }
+
     public Deque()                           // construct an empty deque
     {
+        first = null;
+        last = null;
+        size = 0;
     }
 
     public boolean isEmpty()                 // is the deque empty?
     {
+        return first == null;
     }
 
     public int size()                        // return the number of items on the deque
     {
+        return size;
     }
 
     public void addFirst(Item item)          // add the item to the front
     {
+        if (item == null) throw new java.lang.IllegalArgumentException();
+
+        Node oldfirst = first;
+        first = new Node();
+        first.item = item;
+        first.next = oldfirst;
+
+        System.out.println("addFirst - size: " + size);
+        if (size == 0) last = first;
+
+        System.out.println("addFirst - last == null: " + (last == null));
+
+        size++;
     }
 
     public void addLast(Item item)           // add the item to the end
     {
+        if (item == null) throw new java.lang.IllegalArgumentException();
+
+        Node newLast = new Node();
+        newLast.item = item;
+
+        System.out.println("addLast - Last node creation ok");
+        System.out.println("addLast - size: " + size);
+        System.out.println("addLast - last == null: " + (last == null));
+
+        if (size == 0) {
+            System.out.println("addLast - newLast: " + newLast.item);
+            first = newLast;
+            last = newLast;
+        }
+        else {
+            last.next = newLast;
+            last = newLast;
+        }
+
+        size++;
     }
 
     public Item removeFirst()                // remove and return the item from the front
     {
+        if (isEmpty()) throw new java.util.NoSuchElementException();
+
+        Item result = first.item;
+        first = first.next;
+        size--;
+
+        return result;
     }
 
     public Item removeLast()                 // remove and return the item from the end
     {
+        if (isEmpty()) throw new java.util.NoSuchElementException();
+
+        return null;
     }
 
     public Iterator<Item> iterator()         // return an iterator over items in order from front to end
     {
+        return new Iterator<Item>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public Item next() {
+                return null;
+            }
+        };
     }
 
     public static void main(String[] args)   // unit testing (optional)
     {
+        // Empty queue
+        // Make sure to test what happens when your data structures are emptied. One very common bug is
+        // for something to go wrong when your data structure goes from non-empty to empty and then back
+        // to non-empty. Make sure to include this in your tests.
+
+        // Mutiple Iterators
+        // Make sure to test that multiple iterators can be used simultaneously. You can test this with a
+        // nested foreach loop. The iterators should operate independently of one another
+
+        // Basic tests
+        Deque<String> deck = new Deque<String>();
+        System.out.println("isEmpty: " + deck.isEmpty());
+        deck.addFirst("first");
+        deck.addFirst("more first");
+        deck.addLast("last");
+        deck.addLast("more last");
+        System.out.println("isEmpty: " + deck.isEmpty());
+        System.out.println("size: " + deck.size);
+        System.out.println("remove: " + deck.removeFirst());
+        System.out.println("remove: " + deck.removeFirst());
+        System.out.println("remove: " + deck.removeFirst());
+        System.out.println("remove: " + deck.removeFirst());
+        System.out.println("size: " + deck.size);
     }
 }
