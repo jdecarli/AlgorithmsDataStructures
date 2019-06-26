@@ -26,7 +26,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     public boolean isEmpty()                 // is the deque empty?
     {
-        return first == null;
+        return size == 0;
     }
 
     public int size()                        // return the number of items on the deque
@@ -57,6 +57,7 @@ public class Deque<Item> implements Iterable<Item> {
 
         Node newLast = new Node();
         newLast.item = item;
+        newLast.next = null;
 
         System.out.println("addLast - Last node creation ok");
         System.out.println("addLast - size: " + size);
@@ -90,7 +91,10 @@ public class Deque<Item> implements Iterable<Item> {
     {
         if (isEmpty()) throw new java.util.NoSuchElementException();
 
-        return null;
+        Item result = last.item;
+
+
+        return result;
     }
 
     public Iterator<Item> iterator()         // return an iterator over items in order from front to end
