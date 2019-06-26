@@ -24,12 +24,9 @@ hs_err_pid*
 
 # exclude folders related to the course
 !**/.lift/*
-#!**/.idea/*
 
 # VS Code
 .vscode/
 
-# XML files
-*/**/*.xml
-
-*/**/*.iml
+# Temp files
+**/.idea/workspace.xml
