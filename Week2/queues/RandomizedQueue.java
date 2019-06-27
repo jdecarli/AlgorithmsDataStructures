@@ -4,6 +4,8 @@
  *  Description: Programming Assignment 2: RandonmizedQueue
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdRandom;
+
 import java.util.Iterator;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
@@ -38,10 +40,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     {
         if (isEmpty()) throw new java.util.NoSuchElementException();
 
-        // TODO: return random number
+        // return random number
+        int randIndex = StdRandom.uniform(elements);
+        // Choose a random element from the queue
+        Item randElement = array[randIndex];
+        // Copy the last element to the empty spot (i.e. plug the hole)
+        array[randIndex] = array[elements - 1];
+        // Forget the last element (to avoid loitering)
+        array[elements - 1] = null;
+        // Update the queue size
+        elements--;
 
         // shrink size of array if necessary
         if (elements > 0 && elements == array.length / 4) resize(array.length / 2);
+
+        return randElement;
     }
 
     public Item sample()                     // return a random item (but do not remove it)
