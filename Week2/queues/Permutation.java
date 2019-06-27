@@ -16,7 +16,7 @@ public class Permutation {
 
         String s;
         boolean isEmpty = false;
-
+        StdOut.println("Reading strings from the Standard Input....");
         while (!isEmpty) {
             try {
                 s = StdIn.readString();
