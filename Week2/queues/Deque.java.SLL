@@ -7,19 +7,14 @@
 import java.util.Iterator;
 
 public class Deque<Item> implements Iterable<Item> {
-    private Node first, last;
+    private Node first;
+    private Node last;
     private int size;
 
     // helper linked list class
     private class Node {
         private Item item;
-        private Node next, prev;
-
-        public Node(Item input) {
-            item = input;
-            next = null;
-            prev = null;
-        }
+        private Node next;
     }
 
     public Deque()                           // construct an empty deque
@@ -44,57 +39,49 @@ public class Deque<Item> implements Iterable<Item> {
         if (item == null) throw new java.lang.IllegalArgumentException();
 
         Node oldfirst = first;
-        first = new Node(item);
+        first = new Node();
+        first.item = item;
         first.next = oldfirst;
 
+        System.out.println("addFirst - size: " + size);
         if (size == 0) last = first;
 
-        size++;
+        System.out.println("addFirst - last == null: " + (last == null));
 
-        System.out.println("addFirst internal - first: " + first.item);
-        System.out.println("addFirst internal - last: " + last.item);
+        size++;
     }
 
     public void addLast(Item item)           // add the item to the end
     {
         if (item == null) throw new java.lang.IllegalArgumentException();
 
-        Node newLast = new Node(item);
+        Node newLast = new Node();
+        newLast.item = item;
+        newLast.next = null;
+
+        System.out.println("addLast - Last node creation ok");
+        System.out.println("addLast - size: " + size);
+        System.out.println("addLast - last == null: " + (last == null));
 
         if (size == 0) {
+            System.out.println("addLast - newLast: " + newLast.item);
             first = newLast;
             last = newLast;
         }
         else {
-            newLast.prev = last;
             last.next = newLast;
             last = newLast;
         }
 
         size++;
-
-        System.out.println("addLast internal - first: " + first.item);
-        System.out.println("addLast internal - last: " + last.item);
     }
 
     public Item removeFirst()                // remove and return the item from the front
     {
         if (isEmpty()) throw new java.util.NoSuchElementException();
 
-        // System.out.println("internal remove first: " + first.item);
-        //  System.out.println("internal remove first: " + first.item);
-
         Item result = first.item;
-
-        if (first.next == null) {
-            first = null;
-            last = null;
-        }
-        else {
-            first = first.next;
-            first.prev = null;
-        }
-
+        first = first.next;
         size--;
 
         return result;
@@ -104,25 +91,8 @@ public class Deque<Item> implements Iterable<Item> {
     {
         if (isEmpty()) throw new java.util.NoSuchElementException();
 
-        System.out.println("removeLast internal - size: " + size);
-        System.out.println("removeLast internal - first null: " + (first == null));
-        System.out.println("removeLast internal - last null: " + (last == null));
-        System.out.println("removeLast internal - first: " + first.item);
-        System.out.println("removeLast internal - last: " + last.item);
-
-
         Item result = last.item;
 
-        if (last.prev == null) {
-            last = null;
-            first = null;
-        }
-        else {
-            last = last.prev;
-            last.next = null;
-        }
-
-        size--;
 
         return result;
     }
@@ -165,43 +135,16 @@ public class Deque<Item> implements Iterable<Item> {
         // Basic tests
         Deque<String> deck = new Deque<String>();
         System.out.println("isEmpty: " + deck.isEmpty());
-        System.out.println("size: " + deck.size);
         deck.addFirst("first");
         deck.addFirst("more first");
         deck.addLast("last");
         deck.addLast("more last");
         System.out.println("isEmpty: " + deck.isEmpty());
         System.out.println("size: " + deck.size);
-
-        // Iterator
-        for (String s : deck)
-            System.out.println("iterator: " + s);
-
-        System.out.println("size: " + deck.size);
-        System.out.println("remove first: " + deck.removeFirst());
-        System.out.println("remove first: " + deck.removeFirst());
-        System.out.println("remove first: " + deck.removeFirst());
-        System.out.println("remove first: " + deck.removeFirst());
-        System.out.println("size: " + deck.size);
-
-        // Second set
-        System.out.println("\n---- Refeeding -----");
-        System.out.println("isEmpty: " + deck.isEmpty());
-        System.out.println("size: " + deck.size);
-        deck.addLast("some last");
-        deck.addLast("very last");
-        deck.addFirst("some first");
-        deck.addFirst("very first");
-        System.out.println("size: " + deck.size);
-
-        // Iterator
-        for (String s : deck)
-            System.out.println("iterator: " + s);
-
-        System.out.println("remove last: " + deck.removeLast());
-        System.out.println("remove last: " + deck.removeLast());
-        System.out.println("remove last: " + deck.removeLast());
-        System.out.println("remove last: " + deck.removeLast());
+        System.out.println("remove: " + deck.removeFirst());
+        System.out.println("remove: " + deck.removeFirst());
+        System.out.println("remove: " + deck.removeFirst());
+        System.out.println("remove: " + deck.removeFirst());
         System.out.println("size: " + deck.size);
     }
 }
