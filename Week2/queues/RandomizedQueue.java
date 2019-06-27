@@ -60,24 +60,40 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item sample()                     // return a random item (but do not remove it)
     {
         if (isEmpty()) throw new java.util.NoSuchElementException();
+
+        // return random number
+        int randIndex = StdRandom.uniform(elements);
+        // Choose a random element from the queue
+        Item randElement = array[randIndex];
+
+        return randElement;
     }
 
     public Iterator<Item> iterator()         // return an independent iterator over items in random order
     {
-        // PLACEHOLDER - replace with random iterator
-        return new ReverseArrayIterator();
+        return new ArrayIterator();
     }
 
-    // PLACEHOLDER - replace with random iterator
-    private class ReverseArrayIterator implements Iterator<Item> {
-        private int i;
+    private class ArrayIterator implements Iterator<Item> {
+        private int ix;
+        private Item[] arrayCopy;
 
-        public ReverseArrayIterator() {
-            i = elements - 1;
+        public ArrayIterator() {
+            // Make a copy of the array
+            arrayCopy = (Item[]) new Object[elements];
+            for (int j = 0; j < elements; j++) {
+                arrayCopy[j] = array[j];
+            }
+
+            // Shuffle the objects in the arrayCopy
+            StdRandom.shuffle(arrayCopy);
+
+            // Initialize the iterator index
+            ix = 0;
         }
 
         public boolean hasNext() {
-            return i >= 0;
+            return ix < elements - 1;
         }
 
         public void remove() {
@@ -86,7 +102,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         public Item next() {
             if (!hasNext()) throw new java.util.NoSuchElementException();
-            return array[i--];
+            return arrayCopy[ix++];
         }
     }
 
