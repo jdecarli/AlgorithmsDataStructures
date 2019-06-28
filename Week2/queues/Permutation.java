@@ -13,6 +13,7 @@ public class Permutation {
     public static void main(String[] args) {
 
         int numPops = Integer.parseInt(args[0]);
+        if (numPops == 0) return;
 
         String s;
         boolean isEmpty = false;
