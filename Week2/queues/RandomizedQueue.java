@@ -93,7 +93,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         public boolean hasNext() {
-            return ix < elements - 1;
+            return ix < elements;
         }
 
         public void remove() {
@@ -123,5 +123,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public static void main(String[] args)   // unit testing (optional)
     {
+        // Feed
+        RandomizedQueue<String> bag = new RandomizedQueue<String>();
+        System.out.println("size: " + bag.size());
+        bag.enqueue("first");
+        bag.enqueue("second");
+        bag.enqueue("third");
+        bag.enqueue("fourth");
+        System.out.println("size after 4 elements: " + bag.size());
+
+        int count = 0;
+        for (String s : bag) {
+            System.out.println("iterator: " + s);
+            count++;
+        }
+
+        System.out.println("count after 4 enqueues: " + count);
     }
 }
