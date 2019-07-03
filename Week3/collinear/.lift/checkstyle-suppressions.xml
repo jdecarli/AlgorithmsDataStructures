@@ -71,13 +71,13 @@
     <suppress checks="EmptyStatement"
               files="(QuickX).java"/>
 
-    <suppress id="WrapperType"
+    <suppress id="Wrapper"
               files="(IndexMinPQ|IndexMaxPQ|AdjMatrixGraph|AdjMatrixDigraph).java"/>
 
-    <suppress id="WrapperType"
+    <suppress id="Wrapper"
               files="(Autoboxing|MutableInteger|SortCompare|.*Reflection|.*OfInts|.*OfIntegers|Memory.*).java"/>
 
-    <suppress id="WrapperType"
+    <suppress id="Wrapper"
               files="(KendallTau|Inversions|Distinct|SecureShuffle|PermutationInplace).java"/>
 
     <!-- shifting and masking -->
@@ -109,7 +109,7 @@
               files="RabinKarp.java"/>
 
     <!-- Calls Math.random() -->
-    <suppress checks="RegexpSinglelineJava"
+    <suppress id="AvoidMathRandom"
               files="Knuth.java"/>
 
     <!-- Calls Math.pow(x, 0.5) -->
@@ -162,17 +162,46 @@
     <suppress checks="ParameterNumberCheck"
               files="PlasmaCloud.*.java"/>
 
+    <suppress checks="SuppressWarningsCheck"
+              files="(HashST|SET|Insertion|Merge).java"/>
+
+    <suppress checks="StringLiteralCount"
+              files="(PotentialGene|Merge|Insertion|Complex|HashST|StockQuote).java"/>
+
+    <suppress checks="MemberNameCheck"
+              files="(Graph).java"/>
+
+    <!-- StdRandom does some unusual things -->
+    <suppress checks="IllegalImportCheck"
+              files="StdRandom.java"/>
+    <suppress checks="IllegalTypeCheck"
+              files="StdRandom.java"/>
+    <suppress checks="InnerAssignmentCheck"
+              files="StdRandom.java"/>
+    <suppress checks="IllegalMethodCallCheck"
+              files="StdRandom.java"/>
+    <suppress id="StaticInitializer"
+              files="StdRandom.java"/>
+
     <!-- need Double[] to pass as Comparable[] -->
-    <suppress id="WrapperType"
+    <suppress id="Wrapper"
               files="InsertionTest.java"/>
 
     <!-- Calls Math.random() -->
-    <suppress checks="RegexpSinglelineJava"
+    <suppress id="AvoidMathRandom"
               files="(CouponCollector|Coupon|Flip|Gambler|RandomInt|RandomSeq|RandomSurfer|Sample|SelfAvoidingWalk|TwentyQuestions).java"/>
 
+    <!-- use type parameter upper and lower bounds -->
+    <suppress id="TypeParameter"
+              files="(BST|SET|ST).java"/>
+
     <!--  ***********************************************************************  -->
-    <!--  COS 126 PROGRAMMING ASSIGNMENT EXCEPTIONS                                -->
+    <!--  COS 126 PROGRAMMING ASSIGNMENT/PRECEPT EXCEPTIONS                        -->
     <!--  ***********************************************************************  -->
+
+    <!-- Calls Math.random() -->
+    <suppress id="AvoidMathRandom"
+              files="(RandomWalker|RandomWalkers|RollDice|Ball|Birthday|RandomPokerHands).java"/>
 
     <!-- throw RuntimeException is ok in RingBuffer because we've just introduced exceptions -->
     <suppress checks="IllegalThrows"
@@ -181,6 +210,22 @@
     <!-- students need ^ as xor operator in LFSR and PhotoMagic -->
     <suppress id="BitwiseXor"
               files="(LFSR|PhotoMagic).java"/>
+
+    <!-- these files do some bit-whacking -->
+    <suppress id="BitwiseAnd"
+              files="(HammingEncoder|HammingDecoder|TOY).java"/>
+    <suppress id="BitwiseOr"
+              files="(HammingEncoder|HammingDecoder|TOY).java"/>
+    <suppress id="BitwiseXor"
+              files="(HammingEncoder|HammingDecoder|TOY).java"/>
+
+    <!-- convenient to put multiple statements on one line -->
+    <suppress checks="OneStatementPerLine"
+              files="(TOY).java"/>
+
+    <!-- programming exams that uses generics (seems needed for generic types only in Checkstyle 8.14, bug?)  -->
+    <suppress id="Wrapper"
+              files="(RollingStats|NgonArt|MiniPro|MiniPro2|Election).java"/>
 
     <!--  ***********************************************************************  -->
     <!--  COS 226 PROGRAMMING ASSIGNMENT EXCEPTIONS                                -->
@@ -194,9 +239,9 @@
     <suppress checks="IllegalImport"
               files="(PercolationVisualizer).java"/>
 
-    <!-- UnicodeCheck uses Unicode characters in header -->
+    <!-- UnicodeTest has non-ASCII characters in header -->
     <suppress id="NotASCII"
-              files="(UnicodeCheck).java"/>
+              files="(UnicodeTest).java"/>
 
     <!-- can't seem to combine these into one check with | -->
     <suppress id="FloatType"
@@ -224,12 +269,12 @@
               files="(SeamCarver|BurrowsWheeler|MoveToFront).java"/>
 
     <!-- students often use Integer or Double when unit testing Deque and RandomizedQueue -->
-    <suppress id="WrapperType"
+    <suppress id="Wrapper"
               files="(Deque|RandomizedQueue|BinarySearchDeluxe).java"/>
 
     <!-- students need to use Integer to check for null entry in Iterable -->
-    <suppress id="WrapperType"
-              files="(ShortestCommonAncestor|SCA).java"/>
+    <suppress id="Wrapper"
+              files="(ShortestCommonAncestor|SAP|DeluxeBFS).java"/>
 
 
     <!--  ***********************************************************************  -->
@@ -251,12 +296,16 @@
                          |Blob.java|BeadFinder.java|BeadTracker.java|Avogadro.java|
                          |Percolation.java|PercolationStats.java|
                          |Deque.java|RandomizedQueue.java|Permutation.java|
-                         |Autocomplete|BinarySearchDeluxe.java|Term.java|
+                         |Autocomplete.java|BinarySearchDeluxe.java|Term.java|
                          |Board.java|Solver.java|
                          |PointST.java|KdTreeST.java|
-                         |WordNet.java|ShortestCommonAncestor.java|
+                         |WordNet.java|ShortestCommonAncestor.java|Outcast.java|
                          |SeamCarver.java|
                          |MoveToFront.java|BurrowsWheeler.java)$).*$"/>
+
+    <!--  ***********************************************************************  -->
+    <!--  IGNORE LINELENGTH, MAINCALLS, and COMMENT EXCEPT ON CERTAIN FILES        -->
+    <!--  ***********************************************************************  -->
 
     <suppress checks="LineLengthCheck|MainCallsAllPublicMethods|CommentCheck"
               files="^(?!.*(HiFour|Ordered|GreatCircle|RGBtoCMYK|
@@ -276,6 +325,17 @@
                          |WordNet|ShortestCommonAncestor|
                          |SeamCarver|
                          |MoveToFront|BurrowsWheeler|
+                         |HelloGoodbye|RightTriangle|GreatCircle|CMYKtoRGB|
+                         |GeneralizedHarmonic|BandMatrix|RandomWalker|RandomWalkers|
+                         |DiscreteDistribution|ThueMorse|Birthday|
+                         |ShannonEntropy|Checkerboard|WorldMap|
+                         |ActivationFunction|Divisors|AudioCollage|
+                         |TrinomialBrute|TrinomialDP|RevesPuzzle|
+                         |Inversions|Ramanujan|MaximumSquareSubmatrix|
+                         |ColorHSB|Clock|
+                         |BruteCollinearPoints|FastCollinearPoints|Point|
+                         |BaseballElimination|
+                         |BoggleSolver|
                      ).java$).*$"/>
 </suppressions>
 
