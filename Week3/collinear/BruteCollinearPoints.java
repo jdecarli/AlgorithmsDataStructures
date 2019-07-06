@@ -20,10 +20,11 @@ public class BruteCollinearPoints {
         this.segmentsOfFour = new LineSegment[points.length * points.length];
         this.numOfSegments = 0;
 
-        for (int i = 0; i < points.length; i++) {
-            for (int j = i + 1; j > i && j < points.length; j++) {
-                for (int k = j + 1; k > j && k < points.length; k++) {
+        for (int i = 0; i < points.length - 3; i++) {
+            for (int j = i + 1; j > i && j < points.length - 2; j++) {
+                for (int k = j + 1; k > j && k < points.length - 1; k++) {
                     for (int q = k + 1; q > k && q < points.length; q++) {
+
                         Point pi = points[i];
                         Point pj = points[j];
                         Point pk = points[k];
@@ -33,6 +34,11 @@ public class BruteCollinearPoints {
 
                         if (pointSlopeComparator.compare(pj, pk) == 0) {
                             if (pointSlopeComparator.compare(pj, pq) == 0) {
+
+                                StdOut.println(
+                                        "Found a 4-Segment: " + i + ", " + j + ", " + k + ", "
+                                                + q);
+
                                 LineSegment segmentOf4 = new LineSegment(pi, pq);
                                 this.segmentsOfFour[this.numOfSegments] = segmentOf4;
                                 this.numOfSegments++;
@@ -69,12 +75,18 @@ public class BruteCollinearPoints {
 
         BruteCollinearPoints bcp = new BruteCollinearPoints(points);
 
-        StdOut.println("Number of points: " + points.length);
+        StdOut.println("Number of points: " + points.length + ":");
 
-        StdOut.println("Number of discovered 4-point segments: " + bcp.numberOfSegments());
+        for (Point p : points) {
+            StdOut.println(p.toString());
+        }
 
-        for (LineSegment segment : bcp.segments()) {
-            StdOut.println(segment.toString());
+        int numSeg = bcp.numberOfSegments();
+        StdOut.println("Number of discovered 4-point segments: " + numSeg);
+
+        LineSegment[] allFoundSegments = bcp.segments();
+        for (int i = 0; i < numSeg; i++) {
+            StdOut.println(allFoundSegments[i].toString());
         }
 
 
