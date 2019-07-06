@@ -34,7 +34,8 @@ public class BruteCollinearPoints {
                         if (pointSlopeComparator.compare(pj, pk) == 0) {
                             if (pointSlopeComparator.compare(pj, pq) == 0) {
                                 LineSegment segmentOf4 = new LineSegment(pi, pq);
-                                segmentsOfFour[numOfSegments++] = segmentOf4;
+                                this.segmentsOfFour[this.numOfSegments] = segmentOf4;
+                                this.numOfSegments++;
                             }
                         }
                     }
