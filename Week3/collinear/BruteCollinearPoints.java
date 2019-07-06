@@ -21,16 +21,17 @@ public class BruteCollinearPoints {
         this.numOfSegments = 0;
 
         for (int i = 0; i < points.length - 3; i++) {
+
+            Point pi = points[i];
+            Comparator<Point> pointSlopeComparator = pi.slopeOrder();
+
             for (int j = i + 1; j > i && j < points.length - 2; j++) {
+                Point pj = points[j];
                 for (int k = j + 1; k > j && k < points.length - 1; k++) {
+                    Point pk = points[k];
                     for (int q = k + 1; q > k && q < points.length; q++) {
 
-                        Point pi = points[i];
-                        Point pj = points[j];
-                        Point pk = points[k];
                         Point pq = points[q];
-
-                        Comparator<Point> pointSlopeComparator = pi.slopeOrder();
 
                         if (pointSlopeComparator.compare(pj, pk) == 0) {
                             if (pointSlopeComparator.compare(pj, pq) == 0) {
@@ -77,24 +78,25 @@ public class BruteCollinearPoints {
 
     public static void main(String[] args) {
 
-        Point[] points = new Point[6];
+        Point[] points = new Point[8];
 
-        /*
-        for (int i = 0; i < 6; i++) {
+        // /*
+        int m = 4;
+        for (int i = 0; i < m; i++) {
             points[i] = new Point(i, i);
         }
 
-        points[6] = new Point(0, 1);
-        points[7] = new Point(0, 2);
-        points[8] = new Point(0, 3);
-        points[9] = new Point(0, 4);
-        */
-        points[0] = new Point(19000, 10000);
-        points[1] = new Point(18000, 10000);
-        points[2] = new Point(32000, 10000);
-        points[3] = new Point(21000, 10000);
-        points[4] = new Point(1234, 5678);
-        points[5] = new Point(14000, 10000);
+        points[m] = new Point(0, 1);
+        points[m + 1] = new Point(0, 2);
+        points[m + 2] = new Point(0, 3);
+        points[m + 3] = new Point(0, 4);
+        // */
+        // points[0] = new Point(19000, 10000);
+        // points[1] = new Point(18000, 10000);
+        // points[2] = new Point(32000, 10000);
+        // points[3] = new Point(21000, 10000);
+        // points[4] = new Point(1234, 5678);
+        // points[5] = new Point(14000, 10000);
 
         BruteCollinearPoints bcp = new BruteCollinearPoints(points);
 
@@ -105,8 +107,12 @@ public class BruteCollinearPoints {
         System.out.println("bcp.segments: " + bcp.segments().length);
 
         for (LineSegment segment : bcp.segments()) {
-            if (segment != null)
+            if (segment != null) {
                 StdOut.println(segment.toString());
+            }
+            else {
+                break;
+            }
         }
     }
 }
