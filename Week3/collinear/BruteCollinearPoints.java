@@ -57,13 +57,29 @@ public class BruteCollinearPoints {
 
     public LineSegment[] segments()                // the line segments
     {
-        return segmentsOfFour;
+        return getRightsizedArray(segmentsOfFour);
+    }
+
+    private LineSegment[] getRightsizedArray(LineSegment[] input) {
+
+        if (numOfSegments != input.length) {
+            LineSegment[] newArray = new LineSegment[numOfSegments];
+
+            for (int i = 0; i < numOfSegments; i++) {
+                newArray[i] = input[i];
+            }
+
+            input = newArray;
+        }
+
+        return input;
     }
 
     public static void main(String[] args) {
 
-        Point[] points = new Point[10];
+        Point[] points = new Point[6];
 
+        /*
         for (int i = 0; i < 6; i++) {
             points[i] = new Point(i, i);
         }
@@ -72,23 +88,25 @@ public class BruteCollinearPoints {
         points[7] = new Point(0, 2);
         points[8] = new Point(0, 3);
         points[9] = new Point(0, 4);
+        */
+        points[0] = new Point(19000, 10000);
+        points[1] = new Point(18000, 10000);
+        points[2] = new Point(32000, 10000);
+        points[3] = new Point(21000, 10000);
+        points[4] = new Point(1234, 5678);
+        points[5] = new Point(14000, 10000);
 
         BruteCollinearPoints bcp = new BruteCollinearPoints(points);
 
-        StdOut.println("Number of points: " + points.length + ":");
+        StdOut.println("Number of points: " + points.length);
 
-        for (Point p : points) {
-            StdOut.println(p.toString());
+        StdOut.println("Number of discovered 4-point segments: " + bcp.numberOfSegments());
+
+        System.out.println("bcp.segments: " + bcp.segments().length);
+
+        for (LineSegment segment : bcp.segments()) {
+            if (segment != null)
+                StdOut.println(segment.toString());
         }
-
-        int numSeg = bcp.numberOfSegments();
-        StdOut.println("Number of discovered 4-point segments: " + numSeg);
-
-        LineSegment[] allFoundSegments = bcp.segments();
-        for (int i = 0; i < numSeg; i++) {
-            StdOut.println(allFoundSegments[i].toString());
-        }
-
-
     }
 }
