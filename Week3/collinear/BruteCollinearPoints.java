@@ -10,13 +10,11 @@ import java.util.Comparator;
 
 public class BruteCollinearPoints {
 
-    private Point[] points;
     private LineSegment[] segmentsOfFour;
     private int numOfSegments;
 
     public BruteCollinearPoints(Point[] points)    // finds all line segments containing 4 points
     {
-        this.points = points;
         this.segmentsOfFour = new LineSegment[points.length * points.length];
         this.numOfSegments = 0;
 
@@ -53,20 +51,20 @@ public class BruteCollinearPoints {
 
     public int numberOfSegments()        // the number of line segments
     {
-        return numOfSegments;
+        return this.numOfSegments;
     }
 
     public LineSegment[] segments()                // the line segments
     {
-        return getRightsizedArray(segmentsOfFour);
+        return getRightsizedArray(this.segmentsOfFour);
     }
 
     private LineSegment[] getRightsizedArray(LineSegment[] input) {
 
-        if (numOfSegments != input.length) {
-            LineSegment[] newArray = new LineSegment[numOfSegments];
+        if (this.numOfSegments != input.length) {
+            LineSegment[] newArray = new LineSegment[this.numOfSegments];
 
-            for (int i = 0; i < numOfSegments; i++) {
+            for (int i = 0; i < this.numOfSegments; i++) {
                 newArray[i] = input[i];
             }
 
@@ -78,7 +76,7 @@ public class BruteCollinearPoints {
 
     public static void main(String[] args) {
 
-        Point[] points = new Point[8];
+        Point[] points = new Point[7];
 
         // /*
         int m = 4;
@@ -89,7 +87,6 @@ public class BruteCollinearPoints {
         points[m] = new Point(0, 1);
         points[m + 1] = new Point(0, 2);
         points[m + 2] = new Point(0, 3);
-        points[m + 3] = new Point(0, 4);
         // */
         // points[0] = new Point(19000, 10000);
         // points[1] = new Point(18000, 10000);
