@@ -1,4 +1,5 @@
 import edu.princeton.cs.algs4.MergeX;
+import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -20,6 +21,11 @@ public class FastCollinearPoints {
         Arrays.sort(points, Point::compareTo);
         // Go over all points
         for (int i = 0; i < n; i++) {
+            if (n - i < 3) {
+                break;
+            }
+            int ii = i + 1;
+            StdOut.println("Point " + ii + "/" + n);
             // Pick the "Focal Point"
             Point focalPoint = points[i];
             // Create a slope comparator
@@ -31,20 +37,25 @@ public class FastCollinearPoints {
             MergeX.sort(pointsToCompare, pointSlopeComparator);
             // Loop over
             int j = 0;
+            int jj = j + 1;
             while (j < pointsToCompare.length) {
+                StdOut.println(" --- [" + ii + "/" + n + "]: Check Point " + jj + "/"
+                                       + pointsToCompare.length);
                 Point firstPoint = pointsToCompare[j];
                 int pointCounter = 2;
 
                 for (int k = 1; j + k < pointsToCompare.length; k++) {
+                    StdOut.println(" --- --- k: " + k);
                     if (pointSlopeComparator.compare(firstPoint, pointsToCompare[j + k]) == 0) {
                         pointCounter++;
+                        StdOut.println(" --- --- --- Found " + pointCounter + " colinear points");
                     }
                     else {
                         if (pointCounter > 3) {
                             updateSegmentArray(
                                     new LineSegment(focalPoint, pointsToCompare[j + k - 1]));
                         }
-                        j = j + k - 1;
+                        j = j + k;
                         break;
                     }
 
@@ -52,10 +63,12 @@ public class FastCollinearPoints {
                         LineSegment newSegment = new LineSegment(focalPoint,
                                                                  pointsToCompare[j + k]);
                         updateSegmentArray(newSegment);
-                        j = j + k - 1;
+                        j = j + k;
+                        // break;
                     }
-                }
 
+                }
+                j++;
             }
         }
     }
