@@ -41,13 +41,17 @@ public class FastCollinearPoints {
                     }
                     else {
                         if (pointCounter > 3) {
-                            this.segmentArr[this.numOfSegments++] = new LineSegment(focalPoint,
-                                                                                    pointsToCompare[
-                                                                                            j + k
-                                                                                                    - 1]);
+                            updateSegmentArray(
+                                    new LineSegment(focalPoint, pointsToCompare[j + k - 1]));
                         }
                         j = j + k;
                         break;
+                    }
+
+                    if (j + k == pointsToCompare.length - 1 && pointCounter > 3) {
+                        LineSegment newSegment = new LineSegment(focalPoint,
+                                                                 pointsToCompare[j + k]);
+                        updateSegmentArray(newSegment);
                     }
                 }
 
@@ -63,6 +67,21 @@ public class FastCollinearPoints {
     public LineSegment[] segments()                // the line segments
     {
         return getRightsizedArray(this.segmentArr);
+    }
+
+    private void updateSegmentArray(LineSegment s) {
+        if (this.numOfSegments == this.segmentArr.length) {
+
+            LineSegment[] newArray = new LineSegment[this.numOfSegments * 2];
+
+            for (int i = 0; i < this.numOfSegments; i++) {
+                newArray[i] = this.segmentArr[i];
+            }
+
+            this.segmentArr = newArray;
+            this.numOfSegments++;
+
+        }
     }
 
     private LineSegment[] getRightsizedArray(LineSegment[] input) {
