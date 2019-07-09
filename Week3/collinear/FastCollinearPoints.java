@@ -44,7 +44,7 @@ public class FastCollinearPoints {
                             updateSegmentArray(
                                     new LineSegment(focalPoint, pointsToCompare[j + k - 1]));
                         }
-                        j = j + k;
+                        j = j + k - 1;
                         break;
                     }
 
@@ -52,6 +52,7 @@ public class FastCollinearPoints {
                         LineSegment newSegment = new LineSegment(focalPoint,
                                                                  pointsToCompare[j + k]);
                         updateSegmentArray(newSegment);
+                        j = j + k - 1;
                     }
                 }
 
