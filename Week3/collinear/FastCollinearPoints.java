@@ -38,15 +38,19 @@ public class FastCollinearPoints {
             // Loop over
             int j = 0;
             int jj = j + 1;
+            // Loop over all remaining points. Each point here can potentially
+            // be a "second point" of a 4-point segment.
             while (j < pointsToCompare.length) {
                 StdOut.println(" --- [" + ii + "/" + n + "]: Check Point " + jj + "/"
                                        + pointsToCompare.length);
-                Point firstPoint = pointsToCompare[j];
+                // Get the second Point object
+                Point secondPoint = pointsToCompare[j];
                 int pointCounter = 2;
-
+                // Iterate over all remaining points to see if they align with
+                // the first and second points
                 for (int k = 1; j + k < pointsToCompare.length; k++) {
                     StdOut.println(" --- --- k: " + k);
-                    if (pointSlopeComparator.compare(firstPoint, pointsToCompare[j + k]) == 0) {
+                    if (pointSlopeComparator.compare(secondPoint, pointsToCompare[j + k]) == 0) {
                         pointCounter++;
                         StdOut.println(" --- --- --- Found " + pointCounter + " colinear points");
                     }
@@ -98,10 +102,11 @@ public class FastCollinearPoints {
             }
 
             this.segmentArr = newArray;
-            this.segmentArr[this.numOfSegments] = s;
-            this.numOfSegments++;
 
         }
+
+        this.segmentArr[this.numOfSegments] = s;
+        this.numOfSegments++;
     }
 
     private LineSegment[] getRightsizedArray(LineSegment[] input) {
