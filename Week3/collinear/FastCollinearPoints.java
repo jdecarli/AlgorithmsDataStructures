@@ -71,6 +71,11 @@ public class FastCollinearPoints {
                 j++;
             }
         }
+        StdOut.println("\n *** Segment Search Done! *** \n");
+        StdOut.println("Let's print a few segments...\n");
+        for (int i = 0; i < 10; i++) {
+            StdOut.println(i + ": " + this.segmentArr[i].toString());
+        }
     }
 
     public int numberOfSegments()        // the number of line segments
@@ -93,6 +98,7 @@ public class FastCollinearPoints {
             }
 
             this.segmentArr = newArray;
+            this.segmentArr[this.numOfSegments] = s;
             this.numOfSegments++;
 
         }
