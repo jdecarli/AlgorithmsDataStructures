@@ -21,9 +21,11 @@ public class FastCollinearPoints {
         Arrays.sort(points, Point::compareTo);
         // Go over all points
         for (int i = 0; i < n; i++) {
-            if (n - i < 3) {
+
+            if (n - i < 2) {
                 break;
             }
+
             int ii = i + 1;
             StdOut.println("Point " + ii + "/" + n);
             // Pick the "Focal Point"
@@ -31,7 +33,7 @@ public class FastCollinearPoints {
             // Create a slope comparator
             Comparator<Point> pointSlopeComparator = focalPoint.slopeOrder();
             // Subarray of points: all those to the right from Point i
-            Point[] pointsToCompare = Arrays.copyOfRange(points, i, n - 1);
+            Point[] pointsToCompare = Arrays.copyOfRange(points, i + 1, n);
             // Do the Merge Sort of the Points, according to their slopes
             // (with respect to the Focal Point)
             MergeX.sort(pointsToCompare, pointSlopeComparator);
@@ -53,6 +55,7 @@ public class FastCollinearPoints {
                     if (pointSlopeComparator.compare(secondPoint, pointsToCompare[j + k]) == 0) {
                         pointCounter++;
                         StdOut.println(" --- --- --- Found " + pointCounter + " colinear points");
+                        // continue;
                     }
                     else {
                         if (pointCounter > 3) {
@@ -63,12 +66,14 @@ public class FastCollinearPoints {
                         break;
                     }
 
-                    if (j + k == pointsToCompare.length - 1 && pointCounter > 3) {
-                        LineSegment newSegment = new LineSegment(focalPoint,
-                                                                 pointsToCompare[j + k]);
-                        updateSegmentArray(newSegment);
-                        j = j + k;
-                        // break;
+                    if (j + k == pointsToCompare.length - 1) {
+                        if (pointCounter > 3) {
+                            LineSegment newSegment = new LineSegment(focalPoint,
+                                                                     pointsToCompare[j + k]);
+                            updateSegmentArray(newSegment);
+                        }
+
+                        j = j + k + 1;
                     }
 
                 }
@@ -76,10 +81,6 @@ public class FastCollinearPoints {
             }
         }
         StdOut.println("\n *** Segment Search Done! *** \n");
-        StdOut.println("Let's print a few segments...\n");
-        for (int i = 0; i < 10; i++) {
-            StdOut.println(i + ": " + this.segmentArr[i].toString());
-        }
     }
 
     public int numberOfSegments()        // the number of line segments
