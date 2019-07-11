@@ -69,7 +69,8 @@ public class FastCollinearPoints {
                                     new LineSegment(focalPoint, pointsToCompare[j + k - 1]));
                         }
                         StdOut.println("j = " + j + " | k: " + k);
-                        // j = j + k; - because k is already incrementind (k++) in the for
+                        // j = j + k; //- because k is already incrementind (k++) in the for
+                        j = j + k - 1;
                         break;
                     }
 
