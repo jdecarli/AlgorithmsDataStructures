@@ -19,6 +19,7 @@ public class FastCollinearPoints {
 
         // Sort the points
         Arrays.sort(points, Point::compareTo);
+
         // Go over all points
         for (int i = 0; i < n; i++) {
 
@@ -26,10 +27,10 @@ public class FastCollinearPoints {
                 break;
             }
 
-            int ii = i + 1;
-            StdOut.println("Point " + ii + "/" + n);
             // Pick the "Focal Point"
             Point focalPoint = points[i];
+            StdOut.println("Point " + i + "/" + n + " - Focal: " + focalPoint);
+
             // Create a slope comparator
             Comparator<Point> pointSlopeComparator = focalPoint.slopeOrder();
             // Subarray of points: all those to the right from Point i
@@ -37,24 +38,29 @@ public class FastCollinearPoints {
             // Do the Merge Sort of the Points, according to their slopes
             // (with respect to the Focal Point)
             MergeX.sort(pointsToCompare, pointSlopeComparator);
+
             // Loop over
             int j = 0;
-            int jj = j + 1;
             // Loop over all remaining points. Each point here can potentially
             // be a "second point" of a 4-point segment.
             while (j < pointsToCompare.length) {
-                StdOut.println(" --- [" + ii + "/" + n + "]: Check Point " + jj + "/"
-                                       + pointsToCompare.length);
                 // Get the second Point object
                 Point secondPoint = pointsToCompare[j];
+                StdOut.println(" --- [" + i + "/" + n + "]: Check Point * " + j + "/"
+                                       + pointsToCompare.length + " - Second: " + secondPoint);
+
                 int pointCounter = 2;
+
                 // Iterate over all remaining points to see if they align with
                 // the first and second points
                 for (int k = 1; j + k < pointsToCompare.length; k++) {
-                    StdOut.println(" --- --- k: " + k);
+                    StdOut.println(" --- --- k: " + k + " (" + j + ") - " + pointsToCompare[j + k]);
                     if (pointSlopeComparator.compare(secondPoint, pointsToCompare[j + k]) == 0) {
                         pointCounter++;
                         StdOut.println(" --- --- --- Found " + pointCounter + " colinear points");
+                        StdOut.println(
+                                " --- --- --- " + secondPoint.toString() + " | " + pointsToCompare[j
+                                        + k]);
                         // continue;
                     }
                     else {
@@ -62,7 +68,8 @@ public class FastCollinearPoints {
                             updateSegmentArray(
                                     new LineSegment(focalPoint, pointsToCompare[j + k - 1]));
                         }
-                        j = j + k;
+                        StdOut.println("j = " + j + " | k: " + k);
+                        // j = j + k; - because k is already incrementind (k++) in the for
                         break;
                     }
 
@@ -77,6 +84,7 @@ public class FastCollinearPoints {
                     }
 
                 }
+
                 j++;
             }
         }
@@ -125,4 +133,105 @@ public class FastCollinearPoints {
         return input;
     }
 
+    public static void main(String[] args) {
+
+        // Point[] points = new Point[12];
+
+        System.out.println("Loading points...");
+
+        /*
+        // read the n points from a file
+        In in = new In(args[0]);
+        int n = in.readInt();
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            points[i] = new Point(x, y);
+        }
+        */
+
+        Point[] points = new Point[15];
+        points[0] = new Point(1000, 17000);
+        points[1] = new Point(1000, 27000);
+        points[2] = new Point(1000, 31000);
+        points[3] = new Point(1000, 28000);
+        // points[4] = new Point(1000, 17000);
+        points[4] = new Point(29000, 17000);
+        points[5] = new Point(13000, 17000);
+        points[6] = new Point(17000, 17000);
+        points[7] = new Point(14000, 24000);
+        points[8] = new Point(25000, 24000);
+        points[9] = new Point(2000, 24000);
+        points[10] = new Point(9000, 24000);
+        points[11] = new Point(28000, 29000);
+        points[12] = new Point(22000, 29000);
+        points[13] = new Point(2000, 29000);
+        points[14] = new Point(4000, 29000);
+
+        /*
+        int m = 4;
+
+        points[0] = new Point(16, 5);
+        points[1] = new Point(8, 5);
+        points[2] = new Point(10, 5);
+        points[3] = new Point(5, 5);
+
+        points[m] = new Point(0, 1);
+        points[m + 1] = new Point(2, 0);
+        points[m + 2] = new Point(0, 3);
+        points[m + 3] = new Point(4, 0);
+
+        points[m + 4] = new Point(1, 0);
+        points[m + 5] = new Point(0, 2);
+        points[m + 6] = new Point(3, 0);
+        points[m + 7] = new Point(0, 4);
+        */
+
+        System.out.println("Done loading\n");
+
+        // */
+        // points[0] = new Point(19000, 10000);
+        // points[1] = new Point(18000, 10000);
+        // points[2] = new Point(32000, 10000);
+        // points[3] = new Point(21000, 10000);
+        // points[4] = new Point(1234, 5678);
+        // points[5] = new Point(14000, 10000);
+
+        FastCollinearPoints fast = new FastCollinearPoints(points);
+
+        StdOut.println("Number of points: " + points.length);
+
+        StdOut.println("Number of discovered 4-point segments: " + fast.numberOfSegments());
+
+        System.out.println("fast.segments: " + fast.segments().length);
+
+        /*
+        for (LineSegment segment : fast.segments()) {
+            if (segment != null) {
+                StdOut.println(segment.toString());
+            }
+            else {
+                break;
+            }
+        }
+        */
+
+        printArray(fast.segments(), "Line Segments");
+    }
+
+    private static void printArray(Point[] points, String text) {
+        System.out.println("\n" + text + " - Printing array...");
+        for (Point p : points) {
+            System.out.println(p.toString());
+        }
+    }
+
+    private static void printArray(LineSegment[] points, String text) {
+        System.out.println("\n" + text + " - Printing array...");
+        for (LineSegment p : points) {
+            if (p != null)
+                System.out.println(p.toString());
+        }
+    }
 }
