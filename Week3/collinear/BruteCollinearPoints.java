@@ -4,8 +4,6 @@
  *  Description:
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.StdOut;
-
 import java.util.Comparator;
 
 public class BruteCollinearPoints {
@@ -34,9 +32,9 @@ public class BruteCollinearPoints {
                         if (pointSlopeComparator.compare(pj, pk) == 0) {
                             if (pointSlopeComparator.compare(pj, pq) == 0) {
 
-                                StdOut.println(
-                                        "Found a 4-Segment: " + i + ", " + j + ", " + k + ", "
-                                                + q);
+                                // StdOut.println(
+                                // "Found a 4-Segment: " + i + ", " + j + ", " + k + ", "
+                                //         + q);
 
                                 LineSegment segmentOf4 = new LineSegment(pi, pq);
                                 this.segmentsOfFour[this.numOfSegments] = segmentOf4;
@@ -97,15 +95,15 @@ public class BruteCollinearPoints {
 
         BruteCollinearPoints bcp = new BruteCollinearPoints(points);
 
-        StdOut.println("Number of points: " + points.length);
+        // StdOut.println("Number of points: " + points.length);
 
-        StdOut.println("Number of discovered 4-point segments: " + bcp.numberOfSegments());
+        // StdOut.println("Number of discovered 4-point segments: " + bcp.numberOfSegments());
 
-        System.out.println("bcp.segments: " + bcp.segments().length);
+        // System.out.println("bcp.segments: " + bcp.segments().length);
 
         for (LineSegment segment : bcp.segments()) {
             if (segment != null) {
-                StdOut.println(segment.toString());
+                // StdOut.println(segment.toString());
             }
             else {
                 break;

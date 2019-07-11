@@ -29,7 +29,7 @@ public class FastCollinearPoints {
 
             // Pick the "Focal Point"
             Point focalPoint = points[i];
-            StdOut.println("Point " + i + "/" + n + " - Focal: " + focalPoint);
+            // StdOut.println("Point " + i + "/" + n + " - Focal: " + focalPoint);
 
             // Create a slope comparator
             Comparator<Point> pointSlopeComparator = focalPoint.slopeOrder();
@@ -46,21 +46,21 @@ public class FastCollinearPoints {
             while (j < pointsToCompare.length) {
                 // Get the second Point object
                 Point secondPoint = pointsToCompare[j];
-                StdOut.println(" --- [" + i + "/" + n + "]: Check Point * " + j + "/"
-                                       + pointsToCompare.length + " - Second: " + secondPoint);
+                // StdOut.println(" --- [" + i + "/" + n + "]: Check Point * " + j + "/"
+                // +pointsToCompare.length + " - Second: " + secondPoint);
 
                 int pointCounter = 2;
 
                 // Iterate over all remaining points to see if they align with
                 // the first and second points
                 for (int k = 1; j + k < pointsToCompare.length; k++) {
-                    StdOut.println(" --- --- k: " + k + " (" + j + ") - " + pointsToCompare[j + k]);
+                    // StdOut.println(" --- --- k: " + k + " (" + j + ") - " + pointsToCompare[j + k]);
                     if (pointSlopeComparator.compare(secondPoint, pointsToCompare[j + k]) == 0) {
                         pointCounter++;
-                        StdOut.println(" --- --- --- Found " + pointCounter + " colinear points");
-                        StdOut.println(
-                                " --- --- --- " + secondPoint.toString() + " | " + pointsToCompare[j
-                                        + k]);
+                        // StdOut.println(" --- --- --- Found " + pointCounter + " colinear points");
+                        // StdOut.println(
+                        // " --- --- --- " + secondPoint.toString() + " | " + pointsToCompare[j
+                        // +k]);
                         // continue;
                     }
                     else {
@@ -68,7 +68,7 @@ public class FastCollinearPoints {
                             updateSegmentArray(
                                     new LineSegment(focalPoint, pointsToCompare[j + k - 1]));
                         }
-                        StdOut.println("j = " + j + " | k: " + k);
+                        // StdOut.println("j = " + j + " | k: " + k);
                         // j = j + k; //- because k is already incrementind (k++) in the for
                         j = j + k - 1;
                         break;
@@ -138,7 +138,7 @@ public class FastCollinearPoints {
 
         // Point[] points = new Point[12];
 
-        System.out.println("Loading points...");
+        // System.out.println("Loading points...");
 
         /*
         // read the n points from a file
@@ -189,7 +189,7 @@ public class FastCollinearPoints {
         points[m + 7] = new Point(0, 4);
         */
 
-        System.out.println("Done loading\n");
+        // System.out.println("Done loading\n");
 
         // */
         // points[0] = new Point(19000, 10000);
@@ -201,16 +201,16 @@ public class FastCollinearPoints {
 
         FastCollinearPoints fast = new FastCollinearPoints(points);
 
-        StdOut.println("Number of points: " + points.length);
+        // StdOut.println("Number of points: " + points.length);
 
-        StdOut.println("Number of discovered 4-point segments: " + fast.numberOfSegments());
+        // StdOut.println("Number of discovered 4-point segments: " + fast.numberOfSegments());
 
-        System.out.println("fast.segments: " + fast.segments().length);
+        // System.out.println("fast.segments: " + fast.segments().length);
 
         /*
         for (LineSegment segment : fast.segments()) {
             if (segment != null) {
-                StdOut.println(segment.toString());
+                // StdOut.println(segment.toString());
             }
             else {
                 break;
@@ -218,21 +218,22 @@ public class FastCollinearPoints {
         }
         */
 
-        printArray(fast.segments(), "Line Segments");
+        // printArray(fast.segments(), "Line Segments");
     }
-
+/*
     private static void printArray(Point[] points, String text) {
-        System.out.println("\n" + text + " - Printing array...");
+        // System.out.println("\n" + text + " - Printing array...");
         for (Point p : points) {
-            System.out.println(p.toString());
+            // System.out.println(p.toString());
         }
     }
 
     private static void printArray(LineSegment[] points, String text) {
-        System.out.println("\n" + text + " - Printing array...");
+        // System.out.println("\n" + text + " - Printing array...");
         for (LineSegment p : points) {
             if (p != null)
-                System.out.println(p.toString());
+            // System.out.println(p.toString());
         }
     }
+    */
 }
