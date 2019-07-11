@@ -4,6 +4,7 @@
  *  Description:
  **************************************************************************** */
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class BruteCollinearPoints {
@@ -15,6 +16,9 @@ public class BruteCollinearPoints {
     {
         this.segmentsOfFour = new LineSegment[points.length * points.length];
         this.numOfSegments = 0;
+
+        // Sort the points
+        Arrays.sort(points, Point::compareTo);
 
         for (int i = 0; i < points.length - 3; i++) {
 
