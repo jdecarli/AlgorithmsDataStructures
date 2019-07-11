@@ -12,7 +12,7 @@ import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.Comparator;
 
-public class Point implements Comparable<Point>, Comparator<Point> {
+public class Point implements Comparable<Point> {
 
     private final int x;     // x-coordinate of this point
     private final int y;     // y-coordinate of this point
@@ -110,14 +110,20 @@ public class Point implements Comparable<Point>, Comparator<Point> {
     public Comparator<Point> slopeOrder() {
         /* YOUR CODE HERE */
 
-        // As we implemented the Comparator interface locally, returning this
-        return this;
+        return new PointComparer(this);
     }
 
-    public int compare(Point current, Point input) {
+    private class PointComparer implements Comparator<Point> {
+        Point reference;
 
-        // Intead of doing manual comparison, using the native Double compare method
-        return Double.compare(this.slopeTo(current), this.slopeTo(input));
+        public PointComparer(Point point) {
+            this.reference = point;
+        }
+
+        public int compare(Point current, Point input) {
+            // Intead of doing manual comparison, using the native Double compare method
+            return Double.compare(this.reference.slopeTo(current), this.reference.slopeTo(input));
+        }
     }
 
     /*
@@ -192,35 +198,43 @@ public class Point implements Comparable<Point>, Comparator<Point> {
         Point aFirstp = new Point(0, 0);
         Point aSecondp = new Point(3, 3);
         System.out.println(
-                "invoking -> first against second: " + aInvoking.compare(aFirstp, aSecondp));
+                "invoking -> first against second: " + aInvoking.slopeOrder()
+                                                                .compare(aFirstp, aSecondp));
         System.out.println(
-                "invoking -> second against first: " + aInvoking.compare(aSecondp, aFirstp));
+                "invoking -> second against first: " + aInvoking.slopeOrder()
+                                                                .compare(aSecondp, aFirstp));
 
         System.out.println("\nNon-Connected");
         Point bInvoking = new Point(1, 1);
         Point bFirstp = new Point(6, 0);
         Point bSecondp = new Point(2, 3);
         System.out.println(
-                "invoking -> first against second: " + bInvoking.compare(bFirstp, bSecondp));
+                "invoking -> first against second: " + bInvoking.slopeOrder()
+                                                                .compare(bFirstp, bSecondp));
         System.out.println(
-                "invoking -> second against first: " + bInvoking.compare(bSecondp, bFirstp));
+                "invoking -> second against first: " + bInvoking.slopeOrder()
+                                                                .compare(bSecondp, bFirstp));
 
         System.out.println("\nHorizontal");
         Point cInvoking = new Point(1, 1);
         Point cFirstp = new Point(0, 1);
         Point cSecondp = new Point(3, 1);
         System.out.println(
-                "invoking -> first against second: " + cInvoking.compare(cFirstp, cSecondp));
+                "invoking -> first against second: " + cInvoking.slopeOrder()
+                                                                .compare(cFirstp, cSecondp));
         System.out.println(
-                "invoking -> second against first: " + cInvoking.compare(cSecondp, cFirstp));
+                "invoking -> second against first: " + cInvoking.slopeOrder()
+                                                                .compare(cSecondp, cFirstp));
 
         System.out.println("\nVertical");
         Point dInvoking = new Point(1, 7);
         Point dFirstp = new Point(1, 6);
         Point dSecondp = new Point(1, -4);
         System.out.println(
-                "invoking -> first against second: " + dInvoking.compare(dFirstp, dSecondp));
+                "invoking -> first against second: " + dInvoking.slopeOrder()
+                                                                .compare(dFirstp, dSecondp));
         System.out.println(
-                "invoking -> second against first: " + dInvoking.compare(dSecondp, dFirstp));
+                "invoking -> second against first: " + dInvoking.slopeOrder()
+                                                                .compare(dSecondp, dFirstp));
     }
 }
