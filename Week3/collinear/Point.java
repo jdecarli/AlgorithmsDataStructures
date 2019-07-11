@@ -75,7 +75,7 @@ public class Point implements Comparable<Point> {
         if (ver == 0) // vertical line segment
             return Double.POSITIVE_INFINITY;
 
-        return ver / hor;
+        return hor / ver;
     }
 
     /**
