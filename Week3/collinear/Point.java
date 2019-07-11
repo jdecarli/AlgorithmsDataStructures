@@ -160,7 +160,7 @@ public class Point implements Comparable<Point> {
         unitTestComparator();
     }
 
-    public static void unitTestSlopeTo() {
+    private static void unitTestSlopeTo() {
         System.out.println("Testing slopeTo method...\n");
         System.out.println("Positive - Different points");
         Point aFirstp = new Point(0, 0);
@@ -191,7 +191,7 @@ public class Point implements Comparable<Point> {
         System.out.println("secondp slopeTo firstp: " + dSecondp.slopeTo(dFirstp));
     }
 
-    public static void unitTestComparator() {
+    private static void unitTestComparator() {
         System.out.println("Start testing Comparator method...\n");
         System.out.println("Connected");
         Point aInvoking = new Point(1, 1);
