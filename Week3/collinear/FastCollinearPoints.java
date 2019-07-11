@@ -29,7 +29,6 @@ public class FastCollinearPoints {
 
             // Pick the "Focal Point"
             Point focalPoint = points[i];
-            // StdOut.println("Point " + i + "/" + n + " - Focal: " + focalPoint);
 
             // Create a slope comparator
             Comparator<Point> pointSlopeComparator = focalPoint.slopeOrder();
@@ -46,30 +45,20 @@ public class FastCollinearPoints {
             while (j < pointsToCompare.length) {
                 // Get the second Point object
                 Point secondPoint = pointsToCompare[j];
-                // StdOut.println(" --- [" + i + "/" + n + "]: Check Point * " + j + "/"
-                // +pointsToCompare.length + " - Second: " + secondPoint);
 
                 int pointCounter = 2;
 
                 // Iterate over all remaining points to see if they align with
                 // the first and second points
                 for (int k = 1; j + k < pointsToCompare.length; k++) {
-                    // StdOut.println(" --- --- k: " + k + " (" + j + ") - " + pointsToCompare[j + k]);
                     if (pointSlopeComparator.compare(secondPoint, pointsToCompare[j + k]) == 0) {
                         pointCounter++;
-                        // StdOut.println(" --- --- --- Found " + pointCounter + " colinear points");
-                        // StdOut.println(
-                        // " --- --- --- " + secondPoint.toString() + " | " + pointsToCompare[j
-                        // +k]);
-                        // continue;
                     }
                     else {
                         if (pointCounter > 3) {
                             updateSegmentArray(
                                     new LineSegment(focalPoint, pointsToCompare[j + k - 1]));
                         }
-                        // StdOut.println("j = " + j + " | k: " + k);
-                        // j = j + k; //- because k is already incrementind (k++) in the for
                         j = j + k - 1;
                         break;
                     }
