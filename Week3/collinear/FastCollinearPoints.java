@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.MergeX;
-import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -95,7 +94,8 @@ public class FastCollinearPoints {
                 j++;
             }
         }
-        StdOut.println("\n *** Segment Search Done! *** \n");
+
+        // StdOut.println("\n *** Segment Search Done! *** \n");
     }
 
     public int numberOfSegments()        // the number of line segments
@@ -140,23 +140,12 @@ public class FastCollinearPoints {
         return input;
     }
 
+    /*
     public static void main(String[] args) {
 
         // Point[] points = new Point[12];
 
         // System.out.println("Loading points...");
-
-        /*
-        // read the n points from a file
-        In in = new In(args[0]);
-        int n = in.readInt();
-        Point[] points = new Point[n];
-        for (int i = 0; i < n; i++) {
-            int x = in.readInt();
-            int y = in.readInt();
-            points[i] = new Point(x, y);
-        }
-        */
 
         Point[] points = new Point[15];
         points[0] = new Point(1000, 17000);
@@ -176,7 +165,7 @@ public class FastCollinearPoints {
         points[13] = new Point(2000, 29000);
         points[14] = new Point(4000, 29000);
 
-        /*
+
         int m = 4;
 
         points[0] = new Point(16, 5);
@@ -193,11 +182,11 @@ public class FastCollinearPoints {
         points[m + 5] = new Point(0, 2);
         points[m + 6] = new Point(3, 0);
         points[m + 7] = new Point(0, 4);
-        */
+
 
         // System.out.println("Done loading\n");
 
-        // */
+
         // points[0] = new Point(19000, 10000);
         // points[1] = new Point(18000, 10000);
         // points[2] = new Point(32000, 10000);
@@ -213,7 +202,6 @@ public class FastCollinearPoints {
 
         // System.out.println("fast.segments: " + fast.segments().length);
 
-        /*
         for (LineSegment segment : fast.segments()) {
             if (segment != null) {
                 // StdOut.println(segment.toString());
@@ -222,11 +210,12 @@ public class FastCollinearPoints {
                 break;
             }
         }
-        */
 
         // printArray(fast.segments(), "Line Segments");
     }
-/*
+    */
+
+    /*
     private static void printArray(Point[] points, String text) {
         // System.out.println("\n" + text + " - Printing array...");
         for (Point p : points) {
