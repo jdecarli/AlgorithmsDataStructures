@@ -14,31 +14,43 @@ public class BruteCollinearPoints {
 
     public BruteCollinearPoints(Point[] points)    // finds all line segments containing 4 points
     {
+        if (points == null) {
+            throw new java.lang.IllegalArgumentException();
+        }
+
+        Point[] pointsCopy = new Point[points.length];
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new java.lang.IllegalArgumentException();
+            }
+            pointsCopy[i] = points[i];
+        }
+
         this.segmentsOfFour = new LineSegment[points.length * points.length];
         this.numOfSegments = 0;
 
+
         // Sort the points
-        Arrays.sort(points, Point::compareTo);
+        Arrays.sort(pointsCopy, Point::compareTo);
 
-        for (int i = 0; i < points.length - 3; i++) {
+        for (int i = 0; i < pointsCopy.length - 3; i++) {
 
-            Point pi = points[i];
+            Point pi = pointsCopy[i];
             Comparator<Point> pointSlopeComparator = pi.slopeOrder();
 
-            for (int j = i + 1; j > i && j < points.length - 2; j++) {
-                Point pj = points[j];
-                for (int k = j + 1; k > j && k < points.length - 1; k++) {
-                    Point pk = points[k];
-                    for (int q = k + 1; q > k && q < points.length; q++) {
+            for (int j = i + 1; j > i && j < pointsCopy.length - 2; j++) {
+                Point pj = pointsCopy[j];
+                if (pj.compareTo(pi) == 0) {
+                    throw new java.lang.IllegalArgumentException();
+                }
+                for (int k = j + 1; k > j && k < pointsCopy.length - 1; k++) {
+                    Point pk = pointsCopy[k];
+                    for (int q = k + 1; q > k && q < pointsCopy.length; q++) {
 
-                        Point pq = points[q];
+                        Point pq = pointsCopy[q];
 
                         if (pointSlopeComparator.compare(pj, pk) == 0) {
                             if (pointSlopeComparator.compare(pj, pq) == 0) {
-
-                                // StdOut.println(
-                                // "Found a 4-Segment: " + i + ", " + j + ", " + k + ", "
-                                //         + q);
 
                                 LineSegment segmentOf4 = new LineSegment(pi, pq);
                                 this.segmentsOfFour[this.numOfSegments] = segmentOf4;
@@ -105,13 +117,13 @@ public class BruteCollinearPoints {
 
         // System.out.println("bcp.segments: " + bcp.segments().length);
 
-        for (LineSegment segment : bcp.segments()) {
-            if (segment != null) {
-                // StdOut.println(segment.toString());
-            }
-            else {
-                break;
-            }
-        }
+        // for (LineSegment segment : bcp.segments()) {
+        //     if (segment != null) {
+        //         // StdOut.println(segment.toString());
+        //     }
+        //     else {
+        //         break;
+        //     }
+        // }
     }
 }

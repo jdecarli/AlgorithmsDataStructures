@@ -12,13 +12,25 @@ public class FastCollinearPoints {
     public FastCollinearPoints(
             Point[] points)     // finds all line segments containing 4 or more points
     {
-        int n = points.length;
+        if (points == null) {
+            throw new IllegalArgumentException();
+        }
+
+        Point[] pointsCopy = new Point[points.length];
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new IllegalArgumentException();
+            }
+            pointsCopy[i] = points[i];
+        }
+
+        int n = pointsCopy.length;
 
         numOfSegments = 0;
         segmentArr = new LineSegment[n * n];
 
         // Sort the points
-        Arrays.sort(points, Point::compareTo);
+        Arrays.sort(pointsCopy, Point::compareTo);
 
         // Go over all points
         for (int i = 0; i < n; i++) {
@@ -28,12 +40,12 @@ public class FastCollinearPoints {
             }
 
             // Pick the "Focal Point"
-            Point focalPoint = points[i];
+            Point focalPoint = pointsCopy[i];
 
             // Create a slope comparator
             Comparator<Point> pointSlopeComparator = focalPoint.slopeOrder();
             // Subarray of points: all those to the right from Point i
-            Point[] pointsToCompare = Arrays.copyOfRange(points, i + 1, n);
+            Point[] pointsToCompare = Arrays.copyOfRange(pointsCopy, i + 1, n);
             // Do the Merge Sort of the Points, according to their slopes
             // (with respect to the Focal Point)
             MergeX.sort(pointsToCompare, pointSlopeComparator);
@@ -43,8 +55,13 @@ public class FastCollinearPoints {
             // Loop over all remaining points. Each point here can potentially
             // be a "second point" of a 4-point segment.
             while (j < pointsToCompare.length) {
+
                 // Get the second Point object
                 Point secondPoint = pointsToCompare[j];
+
+                if (focalPoint.compareTo(secondPoint) == 0) {
+                    throw new IllegalArgumentException();
+                }
 
                 int pointCounter = 2;
 
