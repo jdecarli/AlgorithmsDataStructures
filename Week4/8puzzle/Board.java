@@ -30,17 +30,6 @@ public class Board {
 
     // string representation of this board
     public String toString() {
-        // First (bad) implementation:
-        // String s = Integer.toString(this.n) + "\n ";
-        //
-        // for (int row = 0; row < this.n; row++) {
-        //
-        //     for (int col = 0; col < this.n; col++) {
-        //         s += Integer.toString(this.tiles[row][col]) + " ";
-        //     }
-        //     s += "\n ";
-        // }
-
         // Second (fancy and efficient) implementation:
         int maxNumOfDigits = String.valueOf(this.n * this.n).length();
 
@@ -69,7 +58,21 @@ public class Board {
 
     // number of tiles out of place
     public int hamming() {
-        return 0;
+        int h = this.n * this.n;
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n; col++) {
+                int ixGoal = row * this.n + (col + 1);
+                if (this.tiles[row][col] == ixGoal) {
+                    h--;
+                }
+            }
+        }
+        // The last cell in the Goal Board must contain a Zero (i.e. be empty)
+        if (this.tiles[this.n - 1][this.n - 1] == 0) {
+            h--;
+        }
+
+        return h;
     }
 
     // sum of Manhattan distances between tiles and goal
@@ -123,6 +126,7 @@ public class Board {
             StdOut.println("Creating the Board object and checking toString():");
             Board b = new Board(tiles);
             StdOut.println(b.toString());
+            StdOut.println("Hamming Distance: " + b.hamming());
             StdOut.println("\n");
 
         }
