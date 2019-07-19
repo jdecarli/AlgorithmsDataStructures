@@ -5,6 +5,7 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
@@ -58,9 +59,12 @@ public class Board {
 
     // number of tiles out of place
     public int hamming() {
-        int h = this.n * this.n;
+        int h = this.n * this.n - 1;
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
+                if (this.tiles[row][col] == 0) {
+                    continue;
+                }
                 int keyGoal = coordToGoalKey(row, col);
                 if (this.tiles[row][col] == keyGoal) {
                     h--;
@@ -82,6 +86,9 @@ public class Board {
         int mismatchCount = 0;
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
+                if (this.tiles[row][col] == 0) {
+                    continue;
+                }
                 int keyGoal = coordToGoalKey(row, col);
                 int key = this.tiles[row][col];
                 if (key != keyGoal) {
@@ -91,7 +98,7 @@ public class Board {
                     int dCol = Math.abs(col - goalCoord[1]);
                     manhattanDist += (dRow + dCol);
 
-                    // TEST
+                    // TEST (to be commented out later)
                     StdOut.println(
                             mismatchCount + ") Key = " + key + " (Should be " + keyGoal + ")");
                     StdOut.println("Now  (row, col) = (" + row + "," + col + ")");
@@ -117,7 +124,53 @@ public class Board {
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
-        return null;
+        /**
+         * 1. Find the tile "0"
+         * 2. Determine the location type: Corner, Side, Other
+         * 3. Find all adjacent tiles and get their coordinates & keys
+         * 4. For each adjacent tile, swap it with "zero" ->
+         * -> Use the obtained board to create a "neighbor" Board object
+         * -> Add the Board object to an Iterable
+         */
+
+        Queue<Board> neighbors = new Queue<Board>();
+
+        // 1. Find the tile "0"
+        int zeroR = -1;
+        int zeroC = -1;
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n; col++) {
+                int keyGoal = coordToGoalKey(row, col);
+                if (this.tiles[row][col] == 0) {
+                    zeroR = row;
+                    zeroC = col;
+                    break;
+                }
+            }
+        }
+
+        // Going Up
+        if (zeroR - 1 >= 0) {
+            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR - 1, zeroC);
+            neighbors.enqueue(newBoard);
+        }
+        // Going Down
+        if (zeroR + 1 <= n - 1) {
+            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR + 1, zeroC);
+            neighbors.enqueue(newBoard);
+        }
+        // Going Right
+        if (zeroC + 1 <= n - 1) {
+            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR, zeroC + 1);
+            neighbors.enqueue(newBoard);
+        }
+        // Going Left
+        if (zeroC - 1 >= 0) {
+            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR, zeroC - 1);
+            neighbors.enqueue(newBoard);
+        }
+
+        return neighbors;
     }
 
     // a board that is obtained by exchanging any pair of tiles
@@ -190,4 +243,12 @@ public class Board {
         return row * this.n + (col + 1);
     }
 
+    private Board getZeroNeighbor(int zeroR, int zeroC, int row, int col) {
+        int keyToSlide = this.tiles[row][col];
+        int[][] newTiles = this.tiles.clone();
+        newTiles[row][col] = 0;
+        newTiles[zeroR][zeroC] = keyToSlide;
+        Board newBoard = new Board(newTiles);
+        return newBoard;
+    }
 }
