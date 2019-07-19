@@ -136,11 +136,12 @@ public class Board {
         Queue<Board> neighbors = new Queue<Board>();
 
         // 1. Find the tile "0"
-        int zeroR = -1;
-        int zeroC = -1;
+        int[] zeroCoordinates = GetZeroCoordinates();
+        int zeroR = zeroCoordinates[0];
+        int zeroC = zeroCoordinates[1];
+        /*
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
-                int keyGoal = coordToGoalKey(row, col);
                 if (this.tiles[row][col] == 0) {
                     zeroR = row;
                     zeroC = col;
@@ -148,6 +149,7 @@ public class Board {
                 }
             }
         }
+        */
 
         // Going Up
         if (zeroR - 1 >= 0) {
@@ -175,7 +177,52 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        return null;
+        // Requirement: swap adjacent
+        // Steps
+        // 1. Clone an array
+        // 2. Find zero tile
+        // 3. Find adjacents that are not zero tile and swap
+        // 4. Return a board
+
+        // 1. Clone
+        int[][] twin = this.tiles.clone();
+
+        // 2. Find zero tile coordinates
+        int[] zeroCoordinates = GetZeroCoordinates();
+
+        StdOut.println(
+                "ZeroCoordinates - row: " + zeroCoordinates[0] + " | col: " + zeroCoordinates[1]);
+
+        // 3. Find adjacents that are not zero tile
+        if (zeroCoordinates[0] == 0 && zeroCoordinates[1] == 0
+                || zeroCoordinates[0] == 0 && zeroCoordinates[1] == 1) {
+            // zero tile NOT located on last two tiles
+            int buffer = twin[this.n - 1][this.n - 2];
+            twin[this.n - 1][this.n - 2] = twin[this.n - 1][this.n - 1];
+            twin[this.n - 1][this.n - 1] = buffer;
+
+            StdOut.println("Its in 0-1");
+        }
+        else if (zeroCoordinates[0] == this.n - 1 && zeroCoordinates[1] == this.n - 2
+                || zeroCoordinates[0] == this.n - 1 && zeroCoordinates[1] == this.n - 1) {
+            // zero tile NOT located on first nor second tile
+            int buffer = twin[0][0];
+            twin[0][0] = twin[0][1];
+            twin[0][1] = buffer;
+
+            StdOut.println("Its in n-n");
+        }
+
+        // 4. Return a Board
+        Board twinBoard = new Board(twin);
+
+        // DEBUG method
+        StdOut.println("--------------------------------------------------");
+        StdOut.println("Testing twin");
+        StdOut.println(twinBoard);
+        StdOut.println("--------------------------------------------------");
+
+        return twinBoard;
     }
 
     // unit testing (not graded)
@@ -212,8 +259,9 @@ public class Board {
             StdOut.println("--------------------------------------------------");
             StdOut.println("\n");
 
+            // Testing Twin method
+            Board twin = b.twin();
         }
-
     }
 
     private int[] tileKeyToGoalCoord(int key) {
@@ -250,5 +298,21 @@ public class Board {
         newTiles[zeroR][zeroC] = keyToSlide;
         Board newBoard = new Board(newTiles);
         return newBoard;
+    }
+
+    private int[] GetZeroCoordinates() {
+        int[] zeroCoordinates = new int[2];
+
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n; col++) {
+                if (this.tiles[row][col] == 0) {
+                    zeroCoordinates[0] = row;
+                    zeroCoordinates[1] = col;
+                    break;
+                }
+            }
+        }
+
+        return zeroCoordinates;
     }
 }
