@@ -20,8 +20,10 @@ public class Board {
         if (tiles == null) {
             throw new java.lang.IllegalArgumentException();
         }
+
         this.n = tiles.length;
         this.tiles = new int[this.n][this.n];
+
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
                 this.tiles[row][col] = tiles[row][col];
@@ -48,6 +50,7 @@ public class Board {
             }
             sb.append("\n ");
         }
+
         String s = sb.toString();
         return s;
     }
@@ -59,18 +62,18 @@ public class Board {
 
     // number of tiles out of place
     public int hamming() {
-        int h = this.n * this.n - 1;
+        int h = this.n * this.n;
+
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
-                if (this.tiles[row][col] == 0) {
-                    continue;
-                }
-                int keyGoal = coordToGoalKey(row, col);
-                if (this.tiles[row][col] == keyGoal) {
+                int ixGoal = row * this.n + (col + 1);
+
+                if (this.tiles[row][col] == ixGoal) {
                     h--;
                 }
             }
         }
+
         // The last cell in the Goal Board must contain a Zero (i.e. be empty)
         if (this.tiles[this.n - 1][this.n - 1] == 0) {
             h--;
@@ -114,12 +117,34 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return false;
+        return hamming() == 0;
     }
 
     // does this board equal y?
     public boolean equals(Object y) {
-        return false;
+
+        if (y == null) // check nullable
+            return false;
+
+        if (y == this) // compare with itself
+            return true;
+
+        if (y.getClass() != this.getClass()) // check types
+            return false;
+
+        Board other = (Board) y; // casting
+
+        if (this.n != other.tiles.length) // check size
+            return false;
+
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n; col++) {
+                if (this.tiles[row][col] != other.tiles[row][col])
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     // all neighboring boards
@@ -192,6 +217,7 @@ public class Board {
                     tiles[i][j] = in.readInt();
                 }
             }
+
             // TEST
             StdOut.println("Board from the file " + filename + ":");
             for (int row = 0; row < n; row++) {
@@ -200,6 +226,7 @@ public class Board {
                 }
                 StdOut.print("\n");
             }
+
             // Print the Board
             StdOut.println("--------------------------------------------------");
             StdOut.println("Creating the Board object and testing toString():");
@@ -212,6 +239,20 @@ public class Board {
             StdOut.println("--------------------------------------------------");
             StdOut.println("\n");
 
+            // Check equals
+            StdOut.println("\n- Check equals");
+
+            int[][] copy = tiles.clone();
+            Board sameBoard = new Board(copy);
+            copy[0][0] = 5; // to make it disfferent
+            Board distinctBoard = new Board(copy);
+
+            StdOut.println("Against null: " + b.equals(null));
+            StdOut.println("Against self: " + b.equals(b));
+            StdOut.println("Against distinct: " + b.equals(distinctBoard));
+            StdOut.println("Against same: " + b.equals(sameBoard));
+
+            StdOut.println("Tiles length: " + tiles.length);
         }
 
     }
