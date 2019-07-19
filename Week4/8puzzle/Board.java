@@ -61,8 +61,8 @@ public class Board {
         int h = this.n * this.n;
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
-                int ixGoal = row * this.n + (col + 1);
-                if (this.tiles[row][col] == ixGoal) {
+                int keyGoal = coordToGoalKey(row, col);
+                if (this.tiles[row][col] == keyGoal) {
                     h--;
                 }
             }
@@ -71,13 +71,38 @@ public class Board {
         if (this.tiles[this.n - 1][this.n - 1] == 0) {
             h--;
         }
-
         return h;
     }
 
     // sum of Manhattan distances between tiles and goal
     public int manhattan() {
-        return 0;
+        if (isGoal()) return 0;
+
+        int manhattanDist = 0;
+        int mismatchCount = 0;
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n; col++) {
+                int keyGoal = coordToGoalKey(row, col);
+                int key = this.tiles[row][col];
+                if (key != keyGoal) {
+                    mismatchCount++;
+                    int[] goalCoord = tileKeyToGoalCoord(key);
+                    int dRow = Math.abs(row - goalCoord[0]);
+                    int dCol = Math.abs(col - goalCoord[1]);
+                    manhattanDist += (dRow + dCol);
+
+                    // TEST
+                    StdOut.println(
+                            mismatchCount + ") Key = " + key + " (Should be " + keyGoal + ")");
+                    StdOut.println("Now  (row, col) = (" + row + "," + col + ")");
+                    StdOut.println("Goal (row, col) = (" + goalCoord[0] + "," + goalCoord[1] + ")");
+                    StdOut.println("Manhattan Distance =  " + (dRow + dCol));
+                    StdOut.println("--------------------------------------------------");
+                }
+            }
+        }
+
+        return manhattanDist;
     }
 
     // is this board the goal board?
@@ -123,14 +148,46 @@ public class Board {
                 StdOut.print("\n");
             }
             // Print the Board
-            StdOut.println("Creating the Board object and checking toString():");
+            StdOut.println("--------------------------------------------------");
+            StdOut.println("Creating the Board object and testing toString():");
             Board b = new Board(tiles);
             StdOut.println(b.toString());
+            StdOut.println("--------------------------------------------------");
             StdOut.println("Hamming Distance: " + b.hamming());
+            StdOut.println("--------------------------------------------------");
+            StdOut.println("Total Manhattan Distance: " + b.manhattan());
+            StdOut.println("--------------------------------------------------");
             StdOut.println("\n");
 
         }
 
+    }
+
+    private int[] tileKeyToGoalCoord(int key) {
+
+        int[] coord = new int[2];
+
+        if (key == 0) {
+            coord[0] = this.n - 1;
+            coord[1] = this.n - 1;
+            return coord;
+        }
+
+        if (key % this.n == 0) {
+            coord[0] = key / this.n - 1;
+        }
+        else {
+            coord[0] = key / this.n;
+        }
+        coord[1] = key - coord[0] * this.n - 1;
+        return coord;
+    }
+
+    private int coordToGoalKey(int row, int col) {
+        if (row == this.n - 1 && col == this.n - 1) {
+            return 0;
+        }
+        return row * this.n + (col + 1);
     }
 
 }
