@@ -7,8 +7,20 @@
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Queue;
 
+import java.util.Comparator;
+
 public class Solver {
 
+    // TODO: We have to be able to comoare two Boards!
+
+    // Just an idea.......
+    private class Node extends Board implements Comparator {
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            return 0;
+        }
+    }
 
     private Queue<Board> moves;
 
