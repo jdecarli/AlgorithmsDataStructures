@@ -7,17 +7,30 @@
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Queue;
 
-import java.util.Comparator;
-
 public class Solver {
 
-    // TODO: We have to be able to comoare two Boards!
+    // TODO: We have to be able to compare two Boards!
 
     // Just an idea.......
-    private class Node extends Board implements Comparator {
+    private class Node implements Comparable {
+
+        private int stepsFromRoot;   // g
+        private int heuristicValue;  // f
+        private int priorityScore;   // g + f
+        private Board board;
+        private Board parentBoard;
+
+
+        public Node(Board board, Board parent, int level,) {
+
+            this.board = board;
+            this.stepsFromRoot = level;
+            this.parentBoard = parent;
+
+        }
 
         @Override
-        public int compare(Object o1, Object o2) {
+        public int compareTo(Object o) {
             return 0;
         }
     }
@@ -64,7 +77,10 @@ public class Solver {
             // on the searcg tree)
             // and add them to the PQ
             for (Board neighbor : nextMoveA.neighbors()) {
-                pqA.insert(neighbor);
+                if (neighbor != nextMoveA.parent) {
+                    pqA.insert(neighbor);
+                }
+
             }
 
             // B) Solve the Board B (Twin of the initial)
