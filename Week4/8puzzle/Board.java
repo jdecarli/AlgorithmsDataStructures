@@ -161,7 +161,7 @@ public class Board {
         Queue<Board> neighbors = new Queue<Board>();
 
         // 1. Find the tile "0"
-        int[] zeroCoordinates = getZeroCoordinates();
+        int[] zeroCoordinates = this.getZeroCoordinates();
         int zeroR = zeroCoordinates[0];
         int zeroC = zeroCoordinates[1];
         /*
@@ -178,26 +178,56 @@ public class Board {
 
         // Going Up
         if (zeroR - 1 >= 0) {
-            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR - 1, zeroC);
+            // Board newBoard = new Board(this.tiles);
+            Board newBoard = this.getZeroNeighbor(zeroR, zeroC, zeroR - 1, zeroC);
             neighbors.enqueue(newBoard);
         }
         // Going Down
         if (zeroR + 1 <= n - 1) {
-            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR + 1, zeroC);
+            Board newBoard = this.getZeroNeighbor(zeroR, zeroC, zeroR + 1, zeroC);
             neighbors.enqueue(newBoard);
         }
         // Going Right
         if (zeroC + 1 <= n - 1) {
-            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR, zeroC + 1);
+            Board newBoard = this.getZeroNeighbor(zeroR, zeroC, zeroR, zeroC + 1);
             neighbors.enqueue(newBoard);
         }
         // Going Left
         if (zeroC - 1 >= 0) {
-            Board newBoard = getZeroNeighbor(zeroR, zeroC, zeroR, zeroC - 1);
+            Board newBoard = this.getZeroNeighbor(zeroR, zeroC, zeroR, zeroC - 1);
             neighbors.enqueue(newBoard);
         }
 
         return neighbors;
+    }
+
+    // a board that is obtained by exchanging any pair of tiles
+    public Board twin2() {
+        // Clone
+        // int[][] twin = this.tiles.clone();
+        int[][] twin = this.getBoardCopy();
+        // Find a good pair and do the swap
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n - 1; col++) {
+                if (twin[row][col] != 0 && twin[row][col + 1] != 0) {
+                    int buffer = twin[row][col];
+                    twin[row][col] = twin[row][col + 1];
+                    twin[row][col + 1] = buffer;
+                    break;
+                }
+            }
+        }
+
+        // Return a Board
+        Board twinBoard = new Board(twin);
+
+        // DEBUG method
+        StdOut.println("--------------------------------------------------");
+        StdOut.println("Testing twin 2:");
+        StdOut.println(twinBoard);
+        StdOut.println("--------------------------------------------------");
+
+        return twinBoard;
     }
 
     // a board that is obtained by exchanging any pair of tiles
@@ -210,7 +240,8 @@ public class Board {
         // 4. Return a board
 
         // 1. Clone
-        int[][] twin = this.tiles.clone();
+        // int[][] twin = this.tiles.clone();
+        int[][] twin = this.getBoardCopy();
 
         // 2. Find zero tile coordinates
         int[] zeroCoordinates = getZeroCoordinates();
@@ -287,7 +318,15 @@ public class Board {
             StdOut.println("\n");
 
             // Testing Twin method
-            Board twin = b.twin();
+            // Board twin = b.twin();
+
+            // Testing Twin 2 method
+            Board twin2 = b.twin2();
+            StdOut.println("--------------------------------------------------");
+            StdOut.println("List the neighbors:");
+            for (Board neighbor : b.neighbors()) {
+                StdOut.println(neighbor.toString());
+            }
         }
     }
 
@@ -320,7 +359,10 @@ public class Board {
 
     private Board getZeroNeighbor(int zeroR, int zeroC, int row, int col) {
         int keyToSlide = this.tiles[row][col];
-        int[][] newTiles = this.tiles.clone();
+        // int[][] newTiles = this.tiles.clone();
+
+        int[][] newTiles = getBoardCopy();
+
         newTiles[row][col] = 0;
         newTiles[zeroR][zeroC] = keyToSlide;
         Board newBoard = new Board(newTiles);
@@ -341,5 +383,15 @@ public class Board {
         }
 
         return zeroCoordinates;
+    }
+
+    private int[][] getBoardCopy() {
+        int[][] newTiles = new int[this.n][this.n];
+        for (int r = 0; r < this.n; r++) {
+            for (int c = 0; c < this.n; c++) {
+                newTiles[r][c] = this.tiles[r][c];
+            }
+        }
+        return newTiles;
     }
 }
