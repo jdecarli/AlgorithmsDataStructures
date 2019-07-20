@@ -136,7 +136,7 @@ public class Board {
         Queue<Board> neighbors = new Queue<Board>();
 
         // 1. Find the tile "0"
-        int[] zeroCoordinates = GetZeroCoordinates();
+        int[] zeroCoordinates = getZeroCoordinates();
         int zeroR = zeroCoordinates[0];
         int zeroC = zeroCoordinates[1];
         /*
@@ -188,7 +188,7 @@ public class Board {
         int[][] twin = this.tiles.clone();
 
         // 2. Find zero tile coordinates
-        int[] zeroCoordinates = GetZeroCoordinates();
+        int[] zeroCoordinates = getZeroCoordinates();
 
         StdOut.println(
                 "ZeroCoordinates - row: " + zeroCoordinates[0] + " | col: " + zeroCoordinates[1]);
@@ -300,7 +300,7 @@ public class Board {
         return newBoard;
     }
 
-    private int[] GetZeroCoordinates() {
+    private int[] getZeroCoordinates() {
         int[] zeroCoordinates = new int[2];
 
         for (int row = 0; row < this.n; row++) {
