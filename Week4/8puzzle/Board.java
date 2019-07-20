@@ -78,6 +78,7 @@ public class Board {
         if (this.tiles[this.n - 1][this.n - 1] == 0) {
             h--;
         }
+
         return h;
     }
 
@@ -87,27 +88,22 @@ public class Board {
 
         int manhattanDist = 0;
         int mismatchCount = 0;
+
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
                 if (this.tiles[row][col] == 0) {
                     continue;
                 }
+
                 int keyGoal = coordToGoalKey(row, col);
                 int key = this.tiles[row][col];
+
                 if (key != keyGoal) {
                     mismatchCount++;
                     int[] goalCoord = tileKeyToGoalCoord(key);
                     int dRow = Math.abs(row - goalCoord[0]);
                     int dCol = Math.abs(col - goalCoord[1]);
                     manhattanDist += (dRow + dCol);
-
-                    // TEST (to be commented out later)
-                    StdOut.println(
-                            mismatchCount + ") Key = " + key + " (Should be " + keyGoal + ")");
-                    StdOut.println("Now  (row, col) = (" + row + "," + col + ")");
-                    StdOut.println("Goal (row, col) = (" + goalCoord[0] + "," + goalCoord[1] + ")");
-                    StdOut.println("Manhattan Distance =  " + (dRow + dCol));
-                    StdOut.println("--------------------------------------------------");
                 }
             }
         }
@@ -164,21 +160,9 @@ public class Board {
         int[] zeroCoordinates = this.getZeroCoordinates();
         int zeroR = zeroCoordinates[0];
         int zeroC = zeroCoordinates[1];
-        /*
-        for (int row = 0; row < this.n; row++) {
-            for (int col = 0; col < this.n; col++) {
-                if (this.tiles[row][col] == 0) {
-                    zeroR = row;
-                    zeroC = col;
-                    break;
-                }
-            }
-        }
-        */
 
         // Going Up
         if (zeroR - 1 >= 0) {
-            // Board newBoard = new Board(this.tiles);
             Board newBoard = this.getZeroNeighbor(zeroR, zeroC, zeroR - 1, zeroC);
             neighbors.enqueue(newBoard);
         }
@@ -202,10 +186,10 @@ public class Board {
     }
 
     // a board that is obtained by exchanging any pair of tiles
-    public Board twin2() {
+    public Board twin() {
         // Clone
-        // int[][] twin = this.tiles.clone();
         int[][] twin = this.getBoardCopy();
+
         // Find a good pair and do the swap
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n - 1; col++) {
@@ -221,63 +205,6 @@ public class Board {
         // Return a Board
         Board twinBoard = new Board(twin);
 
-        // DEBUG method
-        StdOut.println("--------------------------------------------------");
-        StdOut.println("Testing twin 2:");
-        StdOut.println(twinBoard);
-        StdOut.println("--------------------------------------------------");
-
-        return twinBoard;
-    }
-
-    // a board that is obtained by exchanging any pair of tiles
-    public Board twin() {
-        // Requirement: swap adjacent
-        // Steps
-        // 1. Clone an array
-        // 2. Find zero tile
-        // 3. Find adjacents that are not zero tile and swap
-        // 4. Return a board
-
-        // 1. Clone
-        // int[][] twin = this.tiles.clone();
-        int[][] twin = this.getBoardCopy();
-
-        // 2. Find zero tile coordinates
-        int[] zeroCoordinates = getZeroCoordinates();
-
-        StdOut.println(
-                "ZeroCoordinates - row: " + zeroCoordinates[0] + " | col: " + zeroCoordinates[1]);
-
-        // 3. Find adjacents that are not zero tile
-        if (zeroCoordinates[0] == 0 && zeroCoordinates[1] == 0
-                || zeroCoordinates[0] == 0 && zeroCoordinates[1] == 1) {
-            // zero tile NOT located on last two tiles
-            int buffer = twin[this.n - 1][this.n - 2];
-            twin[this.n - 1][this.n - 2] = twin[this.n - 1][this.n - 1];
-            twin[this.n - 1][this.n - 1] = buffer;
-
-            StdOut.println("Its in 0-1");
-        }
-        else if (zeroCoordinates[0] == this.n - 1 && zeroCoordinates[1] == this.n - 2
-                || zeroCoordinates[0] == this.n - 1 && zeroCoordinates[1] == this.n - 1) {
-            // zero tile NOT located on first nor second tile
-            int buffer = twin[0][0];
-            twin[0][0] = twin[0][1];
-            twin[0][1] = buffer;
-
-            StdOut.println("Its in n-n");
-        }
-
-        // 4. Return a Board
-        Board twinBoard = new Board(twin);
-
-        // DEBUG method
-        StdOut.println("--------------------------------------------------");
-        StdOut.println("Testing twin");
-        StdOut.println(twinBoard);
-        StdOut.println("--------------------------------------------------");
-
         return twinBoard;
     }
 
@@ -285,7 +212,6 @@ public class Board {
     public static void main(String[] args) {
 
         for (String filename : args) {
-
             // read in the board specified in the filename
             In in = new In(filename);
             int n = in.readInt();
@@ -315,13 +241,8 @@ public class Board {
             StdOut.println("--------------------------------------------------");
             StdOut.println("Total Manhattan Distance: " + b.manhattan());
             StdOut.println("--------------------------------------------------");
-            StdOut.println("\n");
-
-            // Testing Twin method
-            // Board twin = b.twin();
 
             // Testing Twin 2 method
-            Board twin2 = b.twin2();
             StdOut.println("--------------------------------------------------");
             StdOut.println("List the neighbors:");
             for (Board neighbor : b.neighbors()) {
@@ -346,7 +267,9 @@ public class Board {
         else {
             coord[0] = key / this.n;
         }
+
         coord[1] = key - coord[0] * this.n - 1;
+
         return coord;
     }
 
@@ -354,18 +277,18 @@ public class Board {
         if (row == this.n - 1 && col == this.n - 1) {
             return 0;
         }
+
         return row * this.n + (col + 1);
     }
 
     private Board getZeroNeighbor(int zeroR, int zeroC, int row, int col) {
         int keyToSlide = this.tiles[row][col];
-        // int[][] newTiles = this.tiles.clone();
-
         int[][] newTiles = getBoardCopy();
 
         newTiles[row][col] = 0;
         newTiles[zeroR][zeroC] = keyToSlide;
         Board newBoard = new Board(newTiles);
+
         return newBoard;
     }
 
@@ -392,6 +315,7 @@ public class Board {
                 newTiles[r][c] = this.tiles[r][c];
             }
         }
+
         return newTiles;
     }
 }
