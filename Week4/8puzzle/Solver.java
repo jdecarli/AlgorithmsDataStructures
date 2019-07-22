@@ -23,6 +23,7 @@ public class Solver {
         private int priorityScore;   // g + f
         private Board board;
         private Board parentBoard;
+        private int cachedHamming;
 
         public Node(Board board, Board parent, int level) {
 
@@ -30,7 +31,8 @@ public class Solver {
             this.parentBoard = parent;
             this.stepsFromRoot = level;
             // Using Hamming as heuristic --------------
-            this.heuristicValue = this.board.hamming();
+            this.cachedHamming = this.board.hamming();
+            this.heuristicValue = this.cachedHamming;
             // -----------------------------------------
             this.priorityScore = this.stepsFromRoot + this.heuristicValue;
         }

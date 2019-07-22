@@ -12,6 +12,8 @@ public class Board {
 
     private int[][] tiles;
     private int n;
+    private int cachedHamming = -1;
+    private int cachedManhattan = -1;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -62,53 +64,18 @@ public class Board {
 
     // number of tiles out of place
     public int hamming() {
-        int h = this.n * this.n - 1;
+        if (cachedHamming == -1)
+            cachedHamming = getHamming();
 
-        for (int row = 0; row < this.n; row++) {
-            for (int col = 0; col < this.n; col++) {
-                int ixGoal = row * this.n + (col + 1);
-
-                if (this.tiles[row][col] == ixGoal) {
-                    h--;
-                }
-            }
-        }
-
-        // The last cell in the Goal Board must contain a Zero (i.e. be empty)
-        // if (this.tiles[this.n - 1][this.n - 1] == 0) {
-        //     h--;
-        // }
-
-        return h;
+        return cachedHamming;
     }
 
     // sum of Manhattan distances between tiles and goal
     public int manhattan() {
-        if (isGoal()) return 0;
+        if (cachedManhattan == -1)
+            cachedManhattan = getManhattan();
 
-        int manhattanDist = 0;
-        int mismatchCount = 0;
-
-        for (int row = 0; row < this.n; row++) {
-            for (int col = 0; col < this.n; col++) {
-                if (this.tiles[row][col] == 0) {
-                    continue;
-                }
-
-                int keyGoal = coordToGoalKey(row, col);
-                int key = this.tiles[row][col];
-
-                if (key != keyGoal) {
-                    mismatchCount++;
-                    int[] goalCoord = tileKeyToGoalCoord(key);
-                    int dRow = Math.abs(row - goalCoord[0]);
-                    int dCol = Math.abs(col - goalCoord[1]);
-                    manhattanDist += (dRow + dCol);
-                }
-            }
-        }
-
-        return manhattanDist;
+        return cachedManhattan;
     }
 
     // is this board the goal board?
@@ -255,6 +222,56 @@ public class Board {
                 StdOut.println(neighbor.toString());
             }
         }
+    }
+
+    // number of tiles out of place
+    private int getHamming() {
+        int h = this.n * this.n - 1;
+
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n; col++) {
+                int ixGoal = row * this.n + (col + 1);
+
+                if (this.tiles[row][col] == ixGoal) {
+                    h--;
+                }
+            }
+        }
+
+        // The last cell in the Goal Board must contain a Zero (i.e. be empty)
+        // if (this.tiles[this.n - 1][this.n - 1] == 0) {
+        //     h--;
+        // }
+
+        return h;
+    }
+
+    private int getManhattan() {
+        if (isGoal()) return 0;
+
+        int manhattanDist = 0;
+        int mismatchCount = 0;
+
+        for (int row = 0; row < this.n; row++) {
+            for (int col = 0; col < this.n; col++) {
+                if (this.tiles[row][col] == 0) {
+                    continue;
+                }
+
+                int keyGoal = coordToGoalKey(row, col);
+                int key = this.tiles[row][col];
+
+                if (key != keyGoal) {
+                    mismatchCount++;
+                    int[] goalCoord = tileKeyToGoalCoord(key);
+                    int dRow = Math.abs(row - goalCoord[0]);
+                    int dCol = Math.abs(col - goalCoord[1]);
+                    manhattanDist += (dRow + dCol);
+                }
+            }
+        }
+
+        return manhattanDist;
     }
 
     private int[] tileKeyToGoalCoord(int key) {
