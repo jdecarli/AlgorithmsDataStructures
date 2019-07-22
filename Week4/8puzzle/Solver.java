@@ -107,8 +107,6 @@ public class Solver {
     }
 
     private boolean executeMove(MinPQ<Node> pq, Queue<Board> mov, boolean isTwin) {
-        // A) Solve the Board A (initial)
-
         // Get the best move
         Node nextMove = pq.delMin();
 
