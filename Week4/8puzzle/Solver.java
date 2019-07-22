@@ -96,16 +96,17 @@ public class Solver {
         }
 
         // TODO: Unit Test for Solver
-        // StdOut.println("------------------------------------");
-        // StdOut.println("Solver Test");
-        // StdOut.println("Is solvable: " + this.isSolvable());
-        // StdOut.println("Q of moves: " + this.moves());
-        // StdOut.println("Solution:");
-        // for (Board b : this.solution())
-        //     StdOut.println(b);
-        // StdOut.println("------------------------------------");
+        StdOut.println("------------------------------------");
+        StdOut.println("Solver Test");
+        StdOut.println("Is solvable: " + this.isSolvable());
+        StdOut.println("Q of moves: " + this.moves());
+        StdOut.println("Solution:");
+        for (Board b : this.solution())
+            StdOut.println(b);
+        StdOut.println("------------------------------------");
     }
 
+    // TODO: Test for puzzle08.txt
     private boolean executeMove(MinPQ<Node> pq, Queue<Board> mov, boolean isTwin) {
         // Get the best move
         Node nextMove = pq.delMin();
@@ -119,7 +120,7 @@ public class Solver {
             this.isSolvable = !isTwin;
             // If Twin, return empty queue
             this.moves = isTwin ? new Queue<Board>() : mov;
-            this.numOfMoves = this.moves.size();
+            this.numOfMoves = isTwin ? this.moves.size() + 1 : this.moves.size();
 
             return false; // Stop execution, we reached a solution
         }
@@ -144,7 +145,7 @@ public class Solver {
 
     // min number of moves to solve initial board
     public int moves() {
-        return this.numOfMoves;
+        return this.numOfMoves - 1;
     }
 
     // sequence of boards in a shortest solution
