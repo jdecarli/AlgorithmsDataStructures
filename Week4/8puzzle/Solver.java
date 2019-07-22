@@ -74,87 +74,56 @@ public class Solver {
         pqA.insert(initialNode);
         pqB.insert(initialNodeTwin);
 
-        while (true) {
+        // TODO: Once test is done, remove safeguard
+        // while (true) {
 
-            nodeUnitTester(initial);
-            break;
+        int count = 0;
+        while (count < 10) {
+            count++;
+
+            // TODO: Unit test for Node class ---------
+            // nodeUnitTester(initial);
+            // break;
             // ----------------------------------------
 
             // A) Solve the Board A (initial)
-            // executeMove(pqA, movesA);
-
-            /* TO BE REMOVED ------------------------------------------------
-            // Get the best move
-            Node nextMoveA = pqA.delMin();
-
-            // Add the move to the list (queue) of moves
-            movesA.enqueue(nextMoveA.board);
-
-            // Check if it's solved
-            if (nextMoveA.board.isGoal()) {
-                this.isSolvable = true;
-                this.numOfMoves = movesA.size();
-                this.moves = movesA;
+            if (!executeMove(pqA, movesA, false))
                 break;
-            }
-
-            // Get the available moves after the nextMove
-            // (i.e., neighbors of that Board, or children of that node
-            // on the searcg tree)
-            // and add them to the PQ
-            for (Board neighbor : nextMoveA.board.neighbors()) {
-                if (neighbor != nextMoveA.parentBoard) {
-                    pqA.insert(new Node(neighbor, nextMoveA.board, nextMoveA.stepsFromRoot + 1));
-                }
-
-            }
-            */
 
             // B) Solve the Board B (Twin of the initial)
-            // executeMove(pqB, movesB);
-
-            /* TO BE REMOVED ------------------------------------------------
-            // Get the best move
-            Board nextMoveB = pqB.delMin();
-
-            // Add the move to the list (queue) of moves
-            movesB.enqueue(nextMoveB);
-
-            // Check if it's solved
-            if (nextMoveB.isGoal()) {
-                this.isSolvable = false;
-                this.numOfMoves = -1;
-                this.moves = null;
+            if (!executeMove(pqB, movesB, true))
                 break;
-            }
-
-            // Get the available moves after the nextMove
-            // (i.e., neighbors of that Board, or children of that node
-            // on the searcg tree)
-            // and add them to the PQ
-            for (Board neighbor : nextMoveB.neighbors()) {
-                pqA.insert(neighbor);
-            }
-            */
         }
+
+        // TODO: Unit Test for Solver
+        StdOut.println("------------------------------------");
+        StdOut.println("Solver Test");
+        StdOut.println("Is solvable: " + this.isSolvable());
+        StdOut.println("Q of moves: " + this.moves());
+        StdOut.println("Solution:");
+        for (Board b : this.solution())
+            StdOut.println(b);
+        StdOut.println("------------------------------------");
     }
 
-    private void executeMove(MinPQ<Node> pq, Queue<Board> moves) {
+    private boolean executeMove(MinPQ<Node> pq, Queue<Board> mov, boolean isTwin) {
         // A) Solve the Board A (initial)
 
         // Get the best move
         Node nextMove = pq.delMin();
 
         // Add the move to the list (queue) of moves
-        moves.enqueue(nextMove.board);
+        mov.enqueue(nextMove.board);
 
         // Check if it's solved
         if (nextMove.board.isGoal()) {
-            this.isSolvable = true;
-            this.numOfMoves = moves.size();
-            this.moves = moves;
+            // If twin, return "not solvable" when goal
+            this.isSolvable = !isTwin;
+            // If Twin, return empty queue
+            this.moves = isTwin ? new Queue<Board>() : mov;
+            this.numOfMoves = mov.size();
 
-            return;
+            return false; // Stop execution, we reached a solution
         }
 
         // Get the available moves after the nextMove
@@ -166,6 +135,8 @@ public class Solver {
                 pq.insert(new Node(neighbor, nextMove.board, nextMove.stepsFromRoot + 1));
             }
         }
+
+        return true; // continue execution, solution not found
     }
 
     // is the initial board solvable? (see below)
@@ -203,13 +174,32 @@ public class Solver {
 
             // Testing comparer
             StdOut.println("\n--------------------------------------------------");
-            StdOut.print("Testing comparer");
+            StdOut.println("Testing Solver Execution");
             Solver solver = new Solver(b); // Test in Solver
             StdOut.println("--------------------------------------------------");
         }
     }
 
     // TODO: remove this UNIT TEST (Node tester)
+    public void solverUnitTester(MinPQ<Node> pq, Queue<Board> moves, Boolean isTwin) {
+        StdOut.println("------------------------------------");
+        StdOut.println("Execute with original start...");
+        StdOut.println("before - PQ size: " + pq.size());
+        StdOut.println("before - moves size: " + moves.size());
+        boolean executionResult = executeMove(pq, moves, isTwin);
+        StdOut.println("after - PQ size: " + pq.size());
+        StdOut.println("after - moves size: " + moves.size());
+        StdOut.println("Execution result: " + executionResult);
+        StdOut.println("------------------------------------");
+
+        if (!executionResult) {
+            StdOut.println("Final moves:");
+            for (Board b : moves) {
+                StdOut.println(b);
+            }
+        }
+    }
+
     public void nodeUnitTester(Board initial) {
         Node node = new Node(initial, null, 0);
         Node nodeLessPriority = new Node(initial.neighbors().iterator().next(), initial, 1);
