@@ -75,11 +75,11 @@ public class Solver {
         pqB.insert(initialNodeTwin);
 
         // TODO: Once test is done, remove safeguard
-        // while (true) {
+        while (true) {
 
-        int count = 0;
-        while (count < 10) {
-            count++;
+            // int count = 0;
+            // while (count < 10) {
+            //     count++;
 
             // TODO: Unit test for Node class ---------
             // nodeUnitTester(initial);
@@ -96,14 +96,14 @@ public class Solver {
         }
 
         // TODO: Unit Test for Solver
-        StdOut.println("------------------------------------");
-        StdOut.println("Solver Test");
-        StdOut.println("Is solvable: " + this.isSolvable());
-        StdOut.println("Q of moves: " + this.moves());
-        StdOut.println("Solution:");
-        for (Board b : this.solution())
-            StdOut.println(b);
-        StdOut.println("------------------------------------");
+        // StdOut.println("------------------------------------");
+        // StdOut.println("Solver Test");
+        // StdOut.println("Is solvable: " + this.isSolvable());
+        // StdOut.println("Q of moves: " + this.moves());
+        // StdOut.println("Solution:");
+        // for (Board b : this.solution())
+        //     StdOut.println(b);
+        // StdOut.println("------------------------------------");
     }
 
     private boolean executeMove(MinPQ<Node> pq, Queue<Board> mov, boolean isTwin) {
@@ -179,36 +179,36 @@ public class Solver {
     }
 
     // TODO: remove this UNIT TEST (Node tester)
-    public void solverUnitTester(MinPQ<Node> pq, Queue<Board> moves, Boolean isTwin) {
-        StdOut.println("------------------------------------");
-        StdOut.println("Execute with original start...");
-        StdOut.println("before - PQ size: " + pq.size());
-        StdOut.println("before - moves size: " + moves.size());
-        boolean executionResult = executeMove(pq, moves, isTwin);
-        StdOut.println("after - PQ size: " + pq.size());
-        StdOut.println("after - moves size: " + moves.size());
-        StdOut.println("Execution result: " + executionResult);
-        StdOut.println("------------------------------------");
+    // private void solverUnitTester(MinPQ<Node> pq, Queue<Board> moves, Boolean isTwin) {
+    //     StdOut.println("------------------------------------");
+    //     StdOut.println("Execute with original start...");
+    //     StdOut.println("before - PQ size: " + pq.size());
+    //     StdOut.println("before - moves size: " + moves.size());
+    //     boolean executionResult = executeMove(pq, moves, isTwin);
+    //     StdOut.println("after - PQ size: " + pq.size());
+    //     StdOut.println("after - moves size: " + moves.size());
+    //     StdOut.println("Execution result: " + executionResult);
+    //     StdOut.println("------------------------------------");
+    //
+    //     if (!executionResult) {
+    //         StdOut.println("Final moves:");
+    //         for (Board b : moves) {
+    //             StdOut.println(b);
+    //         }
+    //     }
+    // }
 
-        if (!executionResult) {
-            StdOut.println("Final moves:");
-            for (Board b : moves) {
-                StdOut.println(b);
-            }
-        }
-    }
-
-    public void nodeUnitTester(Board initial) {
-        Node node = new Node(initial, null, 0);
-        Node nodeLessPriority = new Node(initial.neighbors().iterator().next(), initial, 1);
-
-        int resultMustBeZero = node.compareTo(node);
-        StdOut.println("Compare against self: " + resultMustBeZero);
-        int resultMustBeOne = node.compareTo(nodeLessPriority);
-        StdOut.println("Compare to neighbour with less priority: " + resultMustBeOne);
-        int resultMustBeMinus = nodeLessPriority.compareTo(node);
-        StdOut.println("Neighbour compares to parent with more priority: " + resultMustBeMinus);
-    }
+    // private void nodeUnitTester(Board initial) {
+    //     Node node = new Node(initial, null, 0);
+    //     Node nodeLessPriority = new Node(initial.neighbors().iterator().next(), initial, 1);
+    //
+    //     int resultMustBeZero = node.compareTo(node);
+    //     StdOut.println("Compare against self: " + resultMustBeZero);
+    //     int resultMustBeOne = node.compareTo(nodeLessPriority);
+    //     StdOut.println("Compare to neighbour with less priority: " + resultMustBeOne);
+    //     int resultMustBeMinus = nodeLessPriority.compareTo(node);
+    //     StdOut.println("Neighbour compares to parent with more priority: " + resultMustBeMinus);
+    // }
 
     private static int[][] loadTest(String filename) {
         // read in the board specified in the filename
