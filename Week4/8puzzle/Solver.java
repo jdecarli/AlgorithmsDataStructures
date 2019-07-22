@@ -121,7 +121,7 @@ public class Solver {
             this.isSolvable = !isTwin;
             // If Twin, return empty queue
             this.moves = isTwin ? new Queue<Board>() : mov;
-            this.numOfMoves = mov.size();
+            this.numOfMoves = this.moves.size();
 
             return false; // Stop execution, we reached a solution
         }
