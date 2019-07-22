@@ -62,7 +62,7 @@ public class Board {
 
     // number of tiles out of place
     public int hamming() {
-        int h = this.n * this.n;
+        int h = this.n * this.n - 1;
 
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {
@@ -75,9 +75,9 @@ public class Board {
         }
 
         // The last cell in the Goal Board must contain a Zero (i.e. be empty)
-        if (this.tiles[this.n - 1][this.n - 1] == 0) {
-            h--;
-        }
+        // if (this.tiles[this.n - 1][this.n - 1] == 0) {
+        //     h--;
+        // }
 
         return h;
     }
@@ -190,6 +190,7 @@ public class Board {
         // Clone
         int[][] twin = this.getBoardCopy();
 
+        boolean foundTwin = false;
         // Find a good pair and do the swap
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n - 1; col++) {
@@ -197,9 +198,11 @@ public class Board {
                     int buffer = twin[row][col];
                     twin[row][col] = twin[row][col + 1];
                     twin[row][col + 1] = buffer;
+                    foundTwin = true;
                     break;
                 }
             }
+            if (foundTwin) break;
         }
 
         // Return a Board
@@ -242,7 +245,10 @@ public class Board {
             StdOut.println("Total Manhattan Distance: " + b.manhattan());
             StdOut.println("--------------------------------------------------");
 
-            // Testing Twin 2 method
+            // Testing Twin method
+            StdOut.println("--------------------------------------------------");
+            StdOut.println("Testing Twin method:");
+            StdOut.println(b.twin());
             StdOut.println("--------------------------------------------------");
             StdOut.println("List the neighbors:");
             for (Board neighbor : b.neighbors()) {
