@@ -6,7 +6,7 @@
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
@@ -18,17 +18,20 @@ public class Solver {
     // TODO: after test, move to private
     private class Node implements Comparable<Node> {
 
-        private int stepsFromRoot;   // g
-        private int heuristicValue;  // f
-        private int priorityScore;   // g + f
-        private Board board;
-        private Board parentBoard;
-        private int cachedHamming;
+        private final int stepsFromRoot;   // g
+        private final int heuristicValue;  // f
+        private final int priorityScore;   // g + f
+        private final Board board;
+        private final Board parentBoard;
+        private final int cachedHamming;
 
-        public Node(Board board, Board parent, int level) {
+        private Node parentNode;
+
+        public Node(Board board, Board parent, int level, Node inputParentNode) {
 
             this.board = board;
             this.parentBoard = parent;
+            this.parentNode = inputParentNode;
             this.stepsFromRoot = level;
             // Using Hamming as heuristic --------------
             this.cachedHamming = this.board.hamming();
@@ -55,7 +58,8 @@ public class Solver {
         }
     }
 
-    private Queue<Board> moves;
+    // private Queue<Board> moves;
+    private Stack<Board> moves;
 
     private boolean isSolvable;
 
@@ -67,11 +71,13 @@ public class Solver {
         MinPQ<Node> pqA = new MinPQ<Node>();
         MinPQ<Node> pqB = new MinPQ<Node>();
 
-        Queue<Board> movesA = new Queue<Board>();
-        Queue<Board> movesB = new Queue<Board>();
+        // Queue<Board> movesA = new Queue<Board>();
+        // Queue<Board> movesB = new Queue<Board>();
+        Stack<Board> movesA = new Stack<Board>();
+        Stack<Board> movesB = new Stack<Board>();
 
-        Node initialNode = new Node(initial, null, 0);
-        Node initialNodeTwin = new Node(initial.twin(), null, 0);
+        Node initialNode = new Node(initial, null, 0, null);
+        Node initialNodeTwin = new Node(initial.twin(), null, 0, null);
 
         pqA.insert(initialNode);
         pqB.insert(initialNodeTwin);
@@ -109,20 +115,45 @@ public class Solver {
     }
 
     // TODO: Test for puzzle08.txt
-    private boolean executeMove(MinPQ<Node> pq, Queue<Board> mov, boolean isTwin) {
+    // Theory:
+    // 1. We remove the queue (mov)
+    // 2. Node will receive a parent Node
+    // 3. Wait until success
+    // 4. Once success, we traverse Nodes until its parent and we add them into a queue
+    private boolean executeMove(MinPQ<Node> pq, Stack<Board> mov, boolean isTwin) {
+        Node bufferNode;
+
         // Get the best move
         Node nextMove = pq.delMin();
 
         // Add the move to the list (queue) of moves
-        mov.enqueue(nextMove.board);
+        // mov.enqueue(nextMove.board);
 
         // Check if it's solved
         if (nextMove.board.isGoal()) {
             // If twin, return "not solvable" when goal
             this.isSolvable = !isTwin;
             // If Twin, return empty queue
-            this.moves = isTwin ? new Queue<Board>() : mov;
-            this.numOfMoves = isTwin ? this.moves.size() + 1 : this.moves.size();
+            // this.moves = isTwin ? new Queue<Board>() : mov;
+            // this.numOfMoves = isTwin ? this.moves.size() + 1 : this.moves.size();
+
+            // TESTING NODES APPROACH
+            // this needs optimization to avoid double read
+            this.moves = new Stack<Board>();
+            this.numOfMoves = this.moves.size() + 1;
+
+            if (!isTwin) {
+                bufferNode = nextMove;
+                mov.push(bufferNode.board);
+
+                while (bufferNode.parentNode != null) {
+                    mov.push(bufferNode.parentNode.board);
+                    bufferNode = bufferNode.parentNode;
+                }
+
+                this.moves = mov;
+                this.numOfMoves = this.moves.size();
+            }
 
             return false; // Stop execution, we reached a solution
         }
@@ -133,7 +164,7 @@ public class Solver {
         // and add them to the PQ
         for (Board neighbor : nextMove.board.neighbors()) {
             if (!neighbor.equals(nextMove.parentBoard)) {
-                pq.insert(new Node(neighbor, nextMove.board, nextMove.stepsFromRoot + 1));
+                pq.insert(new Node(neighbor, nextMove.board, nextMove.stepsFromRoot + 1, nextMove));
             }
         }
 

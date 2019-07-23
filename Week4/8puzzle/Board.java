@@ -10,8 +10,8 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
 
-    private int[][] tiles;
-    private int n;
+    private final int[][] tiles;
+    private final int n;
     private int cachedHamming = -1;
     private int cachedManhattan = -1;
 
@@ -20,7 +20,7 @@ public class Board {
     public Board(int[][] tiles) {
 
         if (tiles == null) {
-            throw new java.lang.IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
         this.n = tiles.length;
