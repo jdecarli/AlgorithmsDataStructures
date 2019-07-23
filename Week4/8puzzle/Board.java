@@ -97,8 +97,17 @@ public class Board {
 
         Board other = (Board) y; // casting
 
-        if (this.n != other.tiles.length) // check size
+        // if (this.n != other.tiles.length) // check size
+        if (this.n != other.n) // check size
             return false;
+
+        if (this.hamming() != other.hamming()) {
+            return false;
+        }
+
+        if (this.manhattan() != other.manhattan()) {
+            return false;
+        }
 
         for (int row = 0; row < this.n; row++) {
             for (int col = 0; col < this.n; col++) {

@@ -22,7 +22,8 @@ public class Solver {
         private final int heuristicValue;  // f
         private final int priorityScore;   // g + f
         private final Board board;
-        private final int cachedHamming;
+        // private final int cachedHamming;
+        private final int cachedManhattan;
 
         private Node parentNode;
 
@@ -32,8 +33,9 @@ public class Solver {
             this.parentNode = inputParentNode;
             this.stepsFromRoot = level;
             // Using Hamming as heuristic --------------
-            this.cachedHamming = this.board.hamming();
-            this.heuristicValue = this.cachedHamming;
+            // this.cachedHamming = this.board.hamming();
+            this.cachedManhattan = this.board.manhattan();
+            this.heuristicValue = this.cachedManhattan;
             // -----------------------------------------
             this.priorityScore = this.stepsFromRoot + this.heuristicValue;
         }
@@ -148,6 +150,9 @@ public class Solver {
 
         // Get the best move
         Node nextMove = pq.delMin();
+
+        // StdOut.println("Level " + nextMove.stepsFromRoot + ". Twin? " + isTwin);
+        // StdOut.println(nextMove.board);
 
         // Add the move to the list (queue) of moves
         // mov.enqueue(nextMove.board);
