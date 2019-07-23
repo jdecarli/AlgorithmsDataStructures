@@ -45,14 +45,31 @@ public class Solver {
                 throw new NullPointerException("argument is null");
 
             // same values
-            if (this.equals(that) || this.priorityScore == that.priorityScore)
+            if (this.equals(that))
                 return 0;
 
             // minor/major
             if (this.priorityScore < that.priorityScore)
                 return -1;
-            else
+            else if (this.priorityScore > that.priorityScore)
                 return 1;
+
+            // Breaking a tie
+            if (this.board.hamming() < that.board.hamming()) {
+                return -1;
+            }
+            else if (this.board.hamming() > that.board.hamming()) {
+                return 1;
+            }
+            else if (this.board.manhattan() < this.board.manhattan()) {
+                return -1;
+            }
+            else if (this.board.manhattan() > this.board.manhattan()) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
         }
     }
 
