@@ -155,7 +155,7 @@ public class Solver {
             }
             else {
                 this.moves = null;
-                this.numOfMoves = -1;
+                this.numOfMoves = 0;
             }
 
             return false; // Stop execution, we reached a solution
@@ -165,8 +165,11 @@ public class Solver {
         // (i.e., neighbors of that Board, or children of that node
         // on the searcg tree)
         // and add them to the PQ
-        for (Board neighbor : nextMove.board.neighbors()) {
-            if (!neighbor.equals(nextMove.parentNode.board)) {
+        for (Board neighbor : nextMove.board.neighbors()) { // For all nodes except Root
+            if (nextMove.stepsFromRoot > 0 && !neighbor.equals(nextMove.parentNode.board)) {
+                pq.insert(new Node(neighbor, nextMove, nextMove.stepsFromRoot + 1));
+            }
+            else if (nextMove.stepsFromRoot == 0) { // For the Root Node
                 pq.insert(new Node(neighbor, nextMove, nextMove.stepsFromRoot + 1));
             }
         }
