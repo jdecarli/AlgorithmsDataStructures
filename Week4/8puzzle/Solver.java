@@ -104,6 +104,7 @@ public class Solver {
         }
 
         // TODO: Unit Test for Solver
+        /*
         StdOut.println("------------------------------------");
         StdOut.println("Solver Test");
         StdOut.println("Is solvable: " + this.isSolvable());
@@ -112,6 +113,7 @@ public class Solver {
         for (Board b : this.solution())
             StdOut.println(b);
         StdOut.println("------------------------------------");
+        */
     }
 
     // TODO: Test for puzzle08.txt
