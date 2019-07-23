@@ -75,14 +75,16 @@ public class Solver {
 
         // Queue<Board> movesA = new Queue<Board>();
         // Queue<Board> movesB = new Queue<Board>();
-        Stack<Board> movesA = new Stack<Board>();
-        Stack<Board> movesB = new Stack<Board>();
+        // Stack<Board> movesA = new Stack<Board>();
+        // Stack<Board> movesB = new Stack<Board>();
 
         Node initialNode = new Node(initial, null, 0);
         Node initialNodeTwin = new Node(initial.twin(), null, 0);
 
         pqA.insert(initialNode);
         pqB.insert(initialNodeTwin);
+
+        this.moves = new Stack<Board>();
 
         // TODO: Once test is done, remove safeguard
         while (true) {
@@ -97,11 +99,11 @@ public class Solver {
             // ----------------------------------------
 
             // A) Solve the Board A (initial)
-            if (!executeMove(pqA, movesA, false))
+            if (!isProcessing(pqA, false))
                 break;
 
             // B) Solve the Board B (Twin of the initial)
-            if (!executeMove(pqB, movesB, true))
+            if (!isProcessing(pqB, true))
                 break;
         }
 
@@ -124,7 +126,7 @@ public class Solver {
     // 2. Node will receive a parent Node
     // 3. Wait until success
     // 4. Once success, we traverse Nodes until its parent and we add them into a queue
-    private boolean executeMove(MinPQ<Node> pq, Stack<Board> mov, boolean isTwin) {
+    private boolean isProcessing(MinPQ<Node> pq, boolean isTwin) {
         Node bufferNode;
 
         // Get the best move
@@ -141,19 +143,18 @@ public class Solver {
             // this.moves = isTwin ? new Queue<Board>() : mov;
             // this.numOfMoves = isTwin ? this.moves.size() + 1 : this.moves.size();
 
-            if (!isTwin) {
+            if (!isTwin) {  // if we found a solution for the original board
                 bufferNode = nextMove;
-                mov.push(bufferNode.board);
+                this.moves.push(bufferNode.board);
 
                 while (bufferNode.parentNode != null) {
-                    mov.push(bufferNode.parentNode.board);
+                    this.moves.push(bufferNode.parentNode.board);
                     bufferNode = bufferNode.parentNode;
                 }
 
-                this.moves = mov;
                 this.numOfMoves = this.moves.size();
             }
-            else {
+            else {          // if we solved the twin
                 this.moves = null;
                 this.numOfMoves = 0;
             }
@@ -165,11 +166,8 @@ public class Solver {
         // (i.e., neighbors of that Board, or children of that node
         // on the searcg tree)
         // and add them to the PQ
-        for (Board neighbor : nextMove.board.neighbors()) { // For all nodes except Root
-            if (nextMove.stepsFromRoot > 0 && !neighbor.equals(nextMove.parentNode.board)) {
-                pq.insert(new Node(neighbor, nextMove, nextMove.stepsFromRoot + 1));
-            }
-            else if (nextMove.stepsFromRoot == 0) { // For the Root Node
+        for (Board neighbor : nextMove.board.neighbors()) {
+            if (nextMove.stepsFromRoot == 0 || !neighbor.equals(nextMove.parentNode.board)) {
                 pq.insert(new Node(neighbor, nextMove, nextMove.stepsFromRoot + 1));
             }
         }
