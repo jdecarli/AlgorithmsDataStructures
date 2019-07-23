@@ -22,15 +22,13 @@ public class Solver {
         private final int heuristicValue;  // f
         private final int priorityScore;   // g + f
         private final Board board;
-        private final Board parentBoard;
         private final int cachedHamming;
 
         private Node parentNode;
 
-        public Node(Board board, Board parent, int level, Node inputParentNode) {
+        public Node(Board board, Node inputParentNode, int level) {
 
             this.board = board;
-            this.parentBoard = parent;
             this.parentNode = inputParentNode;
             this.stepsFromRoot = level;
             // Using Hamming as heuristic --------------
@@ -68,6 +66,10 @@ public class Solver {
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
 
+        if (initial == null) {
+            throw new IllegalArgumentException();
+        }
+
         MinPQ<Node> pqA = new MinPQ<Node>();
         MinPQ<Node> pqB = new MinPQ<Node>();
 
@@ -76,8 +78,8 @@ public class Solver {
         Stack<Board> movesA = new Stack<Board>();
         Stack<Board> movesB = new Stack<Board>();
 
-        Node initialNode = new Node(initial, null, 0, null);
-        Node initialNodeTwin = new Node(initial.twin(), null, 0, null);
+        Node initialNode = new Node(initial, null, 0);
+        Node initialNodeTwin = new Node(initial.twin(), null, 0);
 
         pqA.insert(initialNode);
         pqB.insert(initialNodeTwin);
@@ -139,11 +141,6 @@ public class Solver {
             // this.moves = isTwin ? new Queue<Board>() : mov;
             // this.numOfMoves = isTwin ? this.moves.size() + 1 : this.moves.size();
 
-            // TESTING NODES APPROACH
-            // this needs optimization to avoid double read
-            this.moves = new Stack<Board>();
-            this.numOfMoves = this.moves.size() + 1;
-
             if (!isTwin) {
                 bufferNode = nextMove;
                 mov.push(bufferNode.board);
@@ -156,6 +153,10 @@ public class Solver {
                 this.moves = mov;
                 this.numOfMoves = this.moves.size();
             }
+            else {
+                this.moves = null;
+                this.numOfMoves = -1;
+            }
 
             return false; // Stop execution, we reached a solution
         }
@@ -165,8 +166,8 @@ public class Solver {
         // on the searcg tree)
         // and add them to the PQ
         for (Board neighbor : nextMove.board.neighbors()) {
-            if (!neighbor.equals(nextMove.parentBoard)) {
-                pq.insert(new Node(neighbor, nextMove.board, nextMove.stepsFromRoot + 1, nextMove));
+            if (!neighbor.equals(nextMove.parentNode.board)) {
+                pq.insert(new Node(neighbor, nextMove, nextMove.stepsFromRoot + 1));
             }
         }
 
