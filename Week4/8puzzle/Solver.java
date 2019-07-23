@@ -22,7 +22,7 @@ public class Solver {
         private final int heuristicValue;  // f
         private final int priorityScore;   // g + f
         private final Board board;
-        // private final int cachedHamming;
+        private final int cachedHamming;
         private final int cachedManhattan;
 
         private Node parentNode;
@@ -33,7 +33,7 @@ public class Solver {
             this.parentNode = inputParentNode;
             this.stepsFromRoot = level;
             // Using Hamming as heuristic --------------
-            // this.cachedHamming = this.board.hamming();
+            this.cachedHamming = this.board.hamming();
             this.cachedManhattan = this.board.manhattan();
             this.heuristicValue = this.cachedManhattan;
             // -----------------------------------------
@@ -57,16 +57,16 @@ public class Solver {
                 return 1;
 
             // Breaking a tie
-            if (this.board.hamming() < that.board.hamming()) {
+            // if (this.cachedManhattan < this.cachedManhattan) {
+            //     return -1;
+            // }
+            // else if (this.cachedManhattan > this.cachedManhattan) {
+            //     return 1;
+            // }
+            if (this.cachedHamming < that.cachedHamming) {
                 return -1;
             }
-            else if (this.board.hamming() > that.board.hamming()) {
-                return 1;
-            }
-            else if (this.board.manhattan() < this.board.manhattan()) {
-                return -1;
-            }
-            else if (this.board.manhattan() > this.board.manhattan()) {
+            else if (this.cachedHamming > that.cachedHamming) {
                 return 1;
             }
             else {
