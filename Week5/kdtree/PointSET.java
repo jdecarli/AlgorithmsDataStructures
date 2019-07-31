@@ -58,7 +58,6 @@ public class PointSET {
     public void draw() {
         for (Point2D p : this.redBlackTree) {
             StdDraw.filledCircle(p.x(), p.y(), 0.01);
-            // StdDraw.show();
         }
         StdDraw.show();
     }
@@ -127,13 +126,14 @@ public class PointSET {
             StdOut.println("Reading points from the file: " + filename);
             StdOut.println("------------------------------------------------");
             In in = new In(filename);
+            int ix = 0;
             while (in.hasNextLine()) {
 
                 try {
                     double x = in.readDouble();
-                    StdOut.print("x = " + x + ", ");
                     double y = in.readDouble();
-                    StdOut.println("y = " + y);
+                    ix++;
+                    StdOut.printf("%10d. (x, y) = (%8.6f, %8.6f)\n", ix, x, y);
 
                     rbt.insert(new Point2D(x, y));
                 }
