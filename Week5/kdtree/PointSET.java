@@ -4,11 +4,15 @@
  *  Description:
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
+import java.util.NoSuchElementException;
 
 public class PointSET {
 
@@ -37,6 +41,7 @@ public class PointSET {
             throw new java.lang.IllegalArgumentException();
         }
         this.redBlackTree.add(p);
+        this.setSize++;
     }
 
     // does the set contain point p?
@@ -110,6 +115,43 @@ public class PointSET {
 
     // unit testing of the methods (optional)
     public static void main(String[] args) {
+        unitTestCountAndDraw(args, false);
 
+    }
+
+    private static void unitTestCountAndDraw(String[] args, boolean draw) {
+        PointSET rbt = new PointSET();
+
+        for (String filename : args) {
+            StdOut.println("------------------------------------------------");
+            StdOut.println("Reading points from the file: " + filename);
+            StdOut.println("------------------------------------------------");
+            In in = new In(filename);
+            while (in.hasNextLine()) {
+
+                try {
+                    double x = in.readDouble();
+                    StdOut.print("x = " + x + ", ");
+                    double y = in.readDouble();
+                    StdOut.println("y = " + y);
+
+                    rbt.insert(new Point2D(x, y));
+                }
+                catch (NoSuchElementException e) {
+                    break;
+                }
+
+            }
+            StdOut.println("------------------------------------------------");
+            StdOut.println("Number of points: " + rbt.size());
+            StdOut.println("------------------------------------------------");
+
+            if (draw) {
+                StdOut.println("Drawing the points... ");
+                rbt.draw();
+                StdOut.println("------------------------------------------------");
+            }
+
+        }
     }
 }
