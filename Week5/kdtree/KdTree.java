@@ -6,6 +6,7 @@
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
@@ -51,60 +52,6 @@ public class KdTree {
             this.left = null;
             this.right = null;
         }
-
-        // -----------------------------------------------
-        public boolean isKeyX() {
-            return keyIsX;
-        }
-
-        // -----------------------------------------------
-        // public void addChild(Point2D pNew) {
-        //     double xmin, ymin, xmax, ymax;
-        //     // IF Key = x
-        //     if (this.keyIsX) {
-        //         if (this.p.x() < pNew.x()) {
-        //
-        //             xmin = this.rect.xmin();
-        //             xmax = this.p.x();
-        //             ymin = this.rect.ymin();
-        //             ymax = this.rect.ymax();
-        //
-        //             RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-        //             this.left = new KdNode(pNew, rectChild, this);
-        //         }
-        //         else {
-        //             xmin = this.p.x();
-        //             xmax = this.rect.xmax();
-        //             ymin = this.rect.ymin();
-        //             ymax = this.rect.ymax();
-        //
-        //             RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-        //             this.right = new KdNode(pNew, rectChild, this);
-        //         }
-        //     }
-        //     else { // ELSE (If Key = y)
-        //         if (this.p.y() < pNew.y()) {
-        //
-        //             xmin = this.rect.xmin();
-        //             xmax = this.rect.xmax();
-        //             ymin = this.rect.ymin();
-        //             ymax = this.p.y();
-        //
-        //             RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-        //             this.left = new KdNode(pNew, rectChild, this);
-        //         }
-        //         else {
-        //             xmin = this.rect.xmin();
-        //             xmax = this.rect.xmax();
-        //             ymin = this.p.y();
-        //             ymax = this.rect.ymax();
-        //
-        //             RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-        //             this.right = new KdNode(pNew, rectChild, this);
-        //         }
-        //     }
-        //
-        // }
 
         // -----------------------------------------------
         public KdNode put(Point2D pNew) {
@@ -269,8 +216,26 @@ public class KdTree {
     // -----------------------------------------------
     // all points that are inside the rectangle (or on the boundary)
     public Iterable<Point2D> range(RectHV rect) {
-        // TODO
-        return null;
+        KdNode n = this.root;
+        Queue<Point2D> q = new Queue<Point2D>();
+        rangeRecursive(n, q, rect);
+
+        return q;
+    }
+
+    private void rangeRecursive(KdNode node,
+                                Queue<Point2D> queue, RectHV rect) {
+        if (node.rect.intersects(rect)) {
+            if (rect.contains(node.p)) {
+                queue.enqueue(node.p);
+            }
+            if (node.left != null) {
+                rangeRecursive(node.left, queue, rect);
+            }
+            if (node.right != null) {
+                rangeRecursive(node.right, queue, rect);
+            }
+        }
     }
 
     // -----------------------------------------------
@@ -285,35 +250,8 @@ public class KdTree {
     public static void main(
             String[] args) {
         unitTestCountAndDraw(args, true);
+        unitTestRange(args, new RectHV(0.0, 0.0, 0.5, 0.5), true);
     }
-
-    // ****************************************************************
-    // private KdNode put(KdNode n, Point2D p) {
-    //     if (n == null) {
-    //         KdNode newNode = new KdNode(p, rect, parent);
-    //         return newNode;
-    //     }
-    //     else {
-    //         // Compare the keys (x or y) and decide which way to go: left/right
-    //         if (n.keyIsX) { // IF Key = x
-    //             if (p.x() < n.p.x()) {
-    //                 n.left = put(n.left, p);
-    //             }
-    //             else {
-    //                 n.right = put(n.right, p);
-    //             }
-    //         }
-    //         else { // IF Key = y
-    //             if (p.y() < n.p.y()) {
-    //                 n.left = put(n.left, p);
-    //             }
-    //             else {
-    //                 n.right = put(n.right, p);
-    //             }
-    //         }
-    //     }
-    //     return n;
-    // }
 
     // -----------------------------------------------
     private KdNode get(Point2D p) {
@@ -364,6 +302,8 @@ public class KdTree {
 
         for (String filename : args) {
             StdOut.println("------------------------------------------------");
+            StdOut.println("TEST: Count & Draw");
+            StdOut.println("------------------------------------------------");
             StdOut.println("Reading points from the file: " + filename);
             StdOut.println("------------------------------------------------");
             In in = new In(filename);
@@ -393,6 +333,58 @@ public class KdTree {
                 StdOut.println("------------------------------------------------");
             }
 
+        }
+    }
+
+    // -----------------------------------------------
+    private static void unitTestRange(String[] args, RectHV rect, boolean draw) {
+        KdTree kdt = new KdTree();
+
+        StdOut.println("------------------------------------------------");
+        StdOut.println("------------------------------------------------");
+        StdOut.println("TEST: Range");
+
+        for (String filename : args) {
+
+            StdOut.println("------------------------------------------------");
+            StdOut.println("Reading points from the file: " + filename);
+            StdOut.println("------------------------------------------------");
+            In in = new In(filename);
+            int ix = 0;
+            while (in.hasNextLine()) {
+
+                try {
+                    double x = in.readDouble();
+                    double y = in.readDouble();
+                    ix++;
+
+                    kdt.insert(new Point2D(x, y));
+                }
+                catch (NoSuchElementException e) {
+                    break;
+                }
+
+            }
+
+            if (draw) {
+                StdDraw.setPenColor(StdDraw.GREEN);
+                StdDraw.setPenRadius(0.005);
+                StdDraw.rectangle(rect.xmin(), rect.ymin(), rect.xmax(), rect.ymax());
+                StdDraw.setPenRadius(0.02);
+            }
+
+            StdOut.println("Listing the points in the rectangle: " + rect.toString());
+            StdOut.println("------------------------------------------------");
+            ix = 0;
+            for (Point2D pp : kdt.range(rect)) {
+                ix++;
+                StdOut.printf("%10d. (x, y) = (%8.6f, %8.6f)\n",
+                              ix, pp.x(), pp.y());
+                if (draw) {
+                    StdDraw.point(pp.x(), pp.y());
+                }
+
+            }
         }
     }
 }
