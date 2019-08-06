@@ -101,20 +101,22 @@ public class PointSET {
             if (nearestNeighbor != null) {
                 if (p.distanceTo(point) < p.distanceTo(nearestNeighbor)) {
                     nearestNeighbor = point;
+                    // StdOut.println("Update the NN...");
                 }
             }
             else {
                 nearestNeighbor = point;
+                // StdOut.println("Set the initial NN...");
             }
 
         }
 
-        return null;
+        return nearestNeighbor;
     }
 
     // unit testing of the methods (optional)
     public static void main(String[] args) {
-        unitTestCountAndDraw(args, false);
+        unitTestCountAndDraw(args, true);
 
     }
 
