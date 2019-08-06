@@ -250,7 +250,7 @@ public class KdTree {
     public static void main(
             String[] args) {
         unitTestCountAndDraw(args, true);
-        unitTestRange(args, new RectHV(0.0, 0.0, 0.5, 0.5), true);
+        unitTestRange(args, new RectHV(0.02, 0.02, 0.5, 0.5), true);
     }
 
     // -----------------------------------------------
@@ -367,10 +367,20 @@ public class KdTree {
             }
 
             if (draw) {
-                StdDraw.setPenColor(StdDraw.GREEN);
+                StdDraw.setPenColor(StdDraw.MAGENTA);
                 StdDraw.setPenRadius(0.005);
-                StdDraw.rectangle(rect.xmin(), rect.ymin(), rect.xmax(), rect.ymax());
-                StdDraw.setPenRadius(0.02);
+                // This option ("draw a rectangle") didn't work very well...
+                // StdDraw.rectangle(rect.xmin(), rect.ymin(), rect.xmax(), rect.ymax());
+
+                // Draw the rectangle as 4 lines
+                StdDraw.line(rect.xmin(), rect.ymin(), rect.xmin(), rect.ymax());
+                StdDraw.line(rect.xmin(), rect.ymax(), rect.xmax(), rect.ymax());
+                StdDraw.line(rect.xmax(), rect.ymin(), rect.xmax(), rect.ymax());
+                StdDraw.line(rect.xmin(), rect.ymin(), rect.xmax(), rect.ymin());
+
+
+                // Reset the radius before drawing the points
+                StdDraw.setPenRadius(0.015);
             }
 
             StdOut.println("Listing the points in the rectangle: " + rect.toString());
