@@ -23,7 +23,7 @@ public class KdTree {
         private Point2D p;
         private RectHV rect;
         private boolean keyIsX;
-        private KdNode parent;
+        // private KdNode parent;
         private KdNode left, right;
 
         // ***********************************************
@@ -32,7 +32,7 @@ public class KdTree {
             this.p = p;
             this.rect = new RectHV(0.0, 0.0, 1.0, 1.0);
 
-            this.parent = null;
+            // this.parent = null;
             this.keyIsX = true;
             this.left = null;
             this.right = null;
@@ -40,18 +40,23 @@ public class KdTree {
         }
 
         // ***********************************************
-        public KdNode(Point2D p, RectHV rect, KdNode parent) {
+        public KdNode(Point2D p, RectHV rect, boolean keyIsX) {
             // Non-Root Node constructor: with a parent Node
             if (p == null || rect == null) {
                 throw new java.lang.IllegalArgumentException();
             }
             this.p = p;
             this.rect = rect;
-            this.parent = parent;
-            this.keyIsX = !this.parent.keyIsX;
+            // this.parent = parent;
+            this.keyIsX = keyIsX;
             this.left = null;
             this.right = null;
         }
+
+        // ***********************************************
+        // public KdNode put(KdNode node, Point2D pNew) {
+        //     if (node == null) return new KdNode();
+        // }
 
         // ***********************************************
         public KdNode put(Point2D pNew) {
@@ -69,7 +74,7 @@ public class KdTree {
                         ymax = this.rect.ymax();
 
                         RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.left = new KdNode(pNew, rectChild, this);
+                        this.left = new KdNode(pNew, rectChild, false);
                         return this.left;
                     }
                     // ELSE --> Recursive call:
@@ -89,7 +94,7 @@ public class KdTree {
                         ymax = this.rect.ymax();
 
                         RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.right = new KdNode(pNew, rectChild, this);
+                        this.right = new KdNode(pNew, rectChild, false);
                         return this.right;
                     }
                     // ELSE --> Recursive call:
@@ -110,7 +115,7 @@ public class KdTree {
                         ymax = this.p.y();
 
                         RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.left = new KdNode(pNew, rectChild, this);
+                        this.left = new KdNode(pNew, rectChild, true);
                         return this.left;
                     }
                     // ELSE --> Recursive call:
@@ -129,7 +134,7 @@ public class KdTree {
                         ymax = this.rect.ymax();
 
                         RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.right = new KdNode(pNew, rectChild, this);
+                        this.right = new KdNode(pNew, rectChild, true);
                         return this.right;
                     }
                     // ELSE --> Recursive call:
