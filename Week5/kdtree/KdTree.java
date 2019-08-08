@@ -26,7 +26,7 @@ public class KdTree {
         private KdNode parent;
         private KdNode left, right;
 
-        // -----------------------------------------------
+        // ***********************************************
         public KdNode(Point2D p) {
             // Root Node constructor
             this.p = p;
@@ -39,7 +39,7 @@ public class KdTree {
 
         }
 
-        // -----------------------------------------------
+        // ***********************************************
         public KdNode(Point2D p, RectHV rect, KdNode parent) {
             // Non-Root Node constructor: with a parent Node
             if (p == null || rect == null) {
@@ -53,7 +53,7 @@ public class KdTree {
             this.right = null;
         }
 
-        // -----------------------------------------------
+        // ***********************************************
         public KdNode put(Point2D pNew) {
             double xmin, ymin, xmax, ymax;
             // IF Key = x
@@ -141,29 +141,28 @@ public class KdTree {
             }
 
         }
-        // -----------------------------------------------
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // construct an empty set of points
     public KdTree() {
         this.size = 0;
         this.root = null;
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // is the set empty?
     public boolean isEmpty() {
         return this.size == 0;
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // number of points in the set
     public int size() {
         return this.size;
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
         if (this.size == 0) {
@@ -176,20 +175,20 @@ public class KdTree {
         this.size++;
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // does the set contain point p?
     public boolean contains(Point2D p) {
         return this.get(p) != null;
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // draw all points to standard draw
     public void draw() {
         KdNode n = this.root;
         drawNode(n);
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     private void drawNode(KdNode n) {
         if (n == null) return; // base case
         StdDraw.setPenColor(StdDraw.BLACK);
@@ -213,7 +212,7 @@ public class KdTree {
         drawNode(n.right);
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // all points that are inside the rectangle (or on the boundary)
     public Iterable<Point2D> range(RectHV rect) {
         KdNode n = this.root;
@@ -223,6 +222,7 @@ public class KdTree {
         return q;
     }
 
+    // ***********************************************
     private void rangeRecursive(KdNode node,
                                 Queue<Point2D> queue, RectHV rect) {
         if (node.rect.intersects(rect)) {
@@ -238,22 +238,101 @@ public class KdTree {
         }
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
-        // TODO
-        return null;
+        KdNode n = this.root;
+        if (this.root == null) {
+            throw new java.lang.IllegalArgumentException("No neighbors: empty tree!");
+        }
+        Point2D pNearest = n.p;
+        pNearest = nearestRecursive(p, n, pNearest);
+        return pNearest;
     }
 
-    // -----------------------------------------------
+    private Point2D nearestRecursive(Point2D p, KdNode node, Point2D pNearest) {
+        // Sanity check:
+        // IF the node is NULL,
+        // THEN return the current pNearest
+        if (node == null) {
+            return pNearest;
+        }
+        // -----------------------------------------------------------------
+        // Update the pNearest if the selected node's point is
+        // closer to the point p than pNearest
+        double minDistSquared = pNearest.distanceSquaredTo(p);
+        double distSquared = node.p.distanceSquaredTo(p);
+
+        if (distSquared < minDistSquared) {
+            minDistSquared = distSquared;
+            pNearest = node.p;
+        }
+        // -----------------------------------------------------------------
+        // Sanity check:
+        // IF both child nodes are NULL,
+        // THEN return the current pNearest
+        if (node.left == null && node.right == null) {
+            return pNearest;
+        }
+        // IF LEFT node is NULL, OR
+        // LEFT Rectangle is too far from p (prune the LEFT branch)
+        // --> check the RIGHT ONLY, recursively
+        else if (node.left == null ||
+                node.left.rect.distanceSquaredTo(p) > minDistSquared) {
+            pNearest = nearestRecursive(p, node.right, pNearest);
+        }
+        // IF RIGHT node is NULL, OR
+        // RIGHT Rectangle is too far from p (prune the RIGHT branch)
+        // --> check the LEFT ONLY, recursively
+        else if (node.right == null ||
+                node.right.rect.distanceSquaredTo(p) > minDistSquared) {
+            pNearest = nearestRecursive(p, node.left, pNearest);
+        }
+
+
+        // If pruning is not possible at this stage
+        // --> check both branches
+        // IF Splitting by X
+        else if (node.keyIsX) {
+            // IF the point p lies LEFT of the split line
+            if (p.x() < node.p.x()) {
+                pNearest = nearestRecursive(p, node.left, pNearest);
+                pNearest = nearestRecursive(p, node.right, pNearest);
+            }
+            // IF the point p lies RIGHT of the split line,
+            // OR on the line
+            else {
+                pNearest = nearestRecursive(p, node.right, pNearest);
+                pNearest = nearestRecursive(p, node.left, pNearest);
+            }
+        }
+        // IF Splitting by Y
+        else {
+            // IF the point p lies BELOW the split line
+            if (p.y() < node.p.y()) {
+                pNearest = nearestRecursive(p, node.left, pNearest);
+                pNearest = nearestRecursive(p, node.right, pNearest);
+            }
+            // IF the point p lies ABOVE the split line,
+            // OR on the line
+            else {
+                pNearest = nearestRecursive(p, node.right, pNearest);
+                pNearest = nearestRecursive(p, node.left, pNearest);
+            }
+        }
+
+        return pNearest;
+    }
+
+    // ***********************************************
     // unit testing of the methods (optional)
     public static void main(
             String[] args) {
         unitTestCountAndDraw(args, true);
-        unitTestRange(args, new RectHV(0.02, 0.02, 0.5, 0.5), true);
+        unitTestRange(args, new RectHV(0.02, 0.02, 0.6, 0.6), true);
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     private KdNode get(Point2D p) {
         KdNode n = this.root;
         boolean keyIsX = true;
@@ -296,7 +375,7 @@ public class KdTree {
         return null;
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     private static void unitTestCountAndDraw(String[] args, boolean draw) {
         KdTree kdt = new KdTree();
 
@@ -336,7 +415,7 @@ public class KdTree {
         }
     }
 
-    // -----------------------------------------------
+    // ***********************************************
     private static void unitTestRange(String[] args, RectHV rect, boolean draw) {
         KdTree kdt = new KdTree();
 
