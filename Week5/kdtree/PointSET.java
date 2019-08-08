@@ -31,14 +31,21 @@ public class PointSET {
 
     // number of points in the set
     public int size() {
-        return this.setSize;
+        // return this.setSize;
+        if (this.setSize == 0) {
+            return this.setSize;
+        }
+        else {
+            return this.setSize - 1;
+        }
+
     }
 
     // add the point to the set (if it is not already in the set)
     // MUST be ~ log(N)
     public void insert(Point2D p) {
         if (p == null) {
-            throw new java.lang.IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
         this.redBlackTree.add(p);
         this.setSize++;
@@ -48,7 +55,7 @@ public class PointSET {
     // MUST be ~ log(N)
     public boolean contains(Point2D p) {
         if (p == null) {
-            throw new java.lang.IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
         return this.redBlackTree.contains(p);

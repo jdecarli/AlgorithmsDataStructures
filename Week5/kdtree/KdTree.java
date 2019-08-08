@@ -159,7 +159,13 @@ public class KdTree {
     // ***********************************************
     // number of points in the set
     public int size() {
-        return this.size;
+        // return this.size;
+        if (this.size == 0) {
+            return this.size;
+        }
+        else {
+            return this.size - 1;
+        }
     }
 
     // ***********************************************
