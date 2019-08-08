@@ -159,13 +159,13 @@ public class KdTree {
     // ***********************************************
     // number of points in the set
     public int size() {
-        // return this.size;
-        if (this.size == 0) {
-            return this.size;
-        }
-        else {
-            return this.size - 1;
-        }
+        return this.size;
+        // if (this.size == 0) {
+        //     return this.size;
+        // }
+        // else {
+        //     return this.size - 1;
+        // }
     }
 
     // ***********************************************
@@ -340,6 +340,7 @@ public class KdTree {
 
     // ***********************************************
     private KdNode get(Point2D p) {
+        if (p == null) throw new IllegalArgumentException("calls get() with a null key");
         KdNode n = this.root;
         boolean keyIsX = true;
         while (n != null) {

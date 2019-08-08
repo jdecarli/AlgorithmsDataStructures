@@ -31,13 +31,13 @@ public class PointSET {
 
     // number of points in the set
     public int size() {
-        // return this.setSize;
-        if (this.setSize == 0) {
-            return this.setSize;
-        }
-        else {
-            return this.setSize - 1;
-        }
+        return this.setSize;
+        // if (this.setSize == 0) {
+        //     return this.setSize;
+        // }
+        // else {
+        //     return this.setSize - 1;
+        // }
 
     }
 
