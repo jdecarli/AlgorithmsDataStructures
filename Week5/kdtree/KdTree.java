@@ -377,6 +377,9 @@ public class KdTree {
     // ***********************************************
     // all points that are inside the rectangle (or on the boundary)
     public Iterable<Point2D> range(RectHV rect) {
+        if (rect == null) {
+            throw new IllegalArgumentException("range(rect): Have to provide a Rectangle!");
+        }
         KdNode n = this.root;
         Queue<Point2D> q = new Queue<Point2D>();
         rangeRecursive(n, q, rect);
@@ -387,7 +390,7 @@ public class KdTree {
     // ***********************************************
     private void rangeRecursive(KdNode node,
                                 Queue<Point2D> queue, RectHV rect) {
-        if (node.rect.intersects(rect)) {
+        if (node != null && node.rect.intersects(rect)) {
             if (rect.contains(node.p)) {
                 queue.enqueue(node.p);
             }
@@ -408,7 +411,7 @@ public class KdTree {
         //     throw new IllegalArgumentException("No neighbors: empty tree!");
         // }
         if (p == null) {
-            throw new IllegalArgumentException("Have to provide a Point!");
+            throw new IllegalArgumentException("nearest(p): Have to provide a Point!");
         }
         Point2D pNearest = n.p;
         pNearest = nearestRecursive(p, n, pNearest);
