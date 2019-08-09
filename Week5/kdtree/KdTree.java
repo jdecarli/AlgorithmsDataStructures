@@ -407,9 +407,9 @@ public class KdTree {
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
         KdNode n = this.root;
-        // if (this.root == null) {
-        //     throw new IllegalArgumentException("No neighbors: empty tree!");
-        // }
+        if (this.root == null) {
+            throw new IllegalArgumentException("No neighbors: empty tree!");
+        }
         if (p == null) {
             throw new IllegalArgumentException("nearest(p): Have to provide a Point!");
         }
@@ -498,6 +498,7 @@ public class KdTree {
             String[] args) {
         unitTestCountAndDraw(args, true);
         unitTestRange(args, new RectHV(0.02, 0.02, 0.6, 0.6), true);
+        unitTestNearest(args, new Point2D(0.7, 0.7), true);
     }
 
     // ***********************************************
@@ -598,6 +599,52 @@ public class KdTree {
                     StdDraw.point(pp.x(), pp.y());
                 }
 
+            }
+        }
+    }
+
+    private static void unitTestNearest(String[] args, Point2D p, boolean draw) {
+        KdTree kdt = new KdTree();
+
+        StdOut.println("------------------------------------------------");
+        StdOut.println("------------------------------------------------");
+        StdOut.println("TEST: Range");
+
+        for (String filename : args) {
+
+            StdOut.println("------------------------------------------------");
+            StdOut.println("Reading points from the file: " + filename);
+            StdOut.println("------------------------------------------------");
+            In in = new In(filename);
+            int ix = 0;
+            while (in.hasNextLine()) {
+
+                try {
+                    double x = in.readDouble();
+                    double y = in.readDouble();
+                    ix++;
+
+                    kdt.insert(new Point2D(x, y));
+                }
+                catch (NoSuchElementException e) {
+                    break;
+                }
+
+            }
+
+            StdOut.println("Searching for the Nearest Neighbor for this Point: " + p.toString());
+            StdOut.println("------------------------------------------------");
+            Point2D pNearest = kdt.nearest(p);
+            StdOut.println("Found the nearest point: " + pNearest.toString());
+            StdOut.println("------------------------------------------------");
+            if (draw) {
+                StdDraw.setPenColor(StdDraw.DARK_GRAY);
+                StdDraw.setPenRadius(0.02);
+                StdDraw.point(p.x(), p.y());
+
+                StdDraw.setPenColor(StdDraw.GREEN);
+                StdDraw.setPenRadius(0.02);
+                StdDraw.point(pNearest.x(), pNearest.y());
             }
         }
     }
