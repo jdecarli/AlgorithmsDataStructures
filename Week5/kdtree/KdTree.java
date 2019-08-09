@@ -36,14 +36,13 @@ public class KdTree {
             this.keyIsX = true;
             this.left = null;
             this.right = null;
-
         }
 
         // ***********************************************
         public KdNode(Point2D p, RectHV rect, boolean keyIsX) {
             // Non-Root Node constructor: with a parent Node
             if (p == null || rect == null) {
-                throw new java.lang.IllegalArgumentException();
+                throw new IllegalArgumentException();
             }
             this.p = p;
             this.rect = rect;
@@ -54,98 +53,93 @@ public class KdTree {
         }
 
         // ***********************************************
-        // public KdNode put(KdNode node, Point2D pNew) {
-        //     if (node == null) return new KdNode();
+        // private KdNode put(Point2D pNew) {
+        //     double xmin, ymin, xmax, ymax;
+        //     // IF Key = x
+        //     if (this.keyIsX) {
+        //         // IF p_x < pNew_x --> GO LEFT
+        //         if (pNew.x() < this.p.x()) {
+        //             // IF No Left Child
+        //             if (this.left == null) {
+        //
+        //                 xmin = this.rect.xmin();
+        //                 xmax = this.p.x();
+        //                 ymin = this.rect.ymin();
+        //                 ymax = this.rect.ymax();
+        //
+        //                 RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
+        //                 this.left = new KdNode(pNew, rectChild, false);
+        //                 return this.left;
+        //             }
+        //             // ELSE --> Recursive call:
+        //             // Pass the pNew further down the tree
+        //             else {
+        //                 return this.left.put(pNew);
+        //             }
+        //         }
+        //         // ELSE --> GO RIGHT
+        //         else {
+        //             // IF No Right Child
+        //             if (this.right == null) {
+        //
+        //                 xmin = this.p.x();
+        //                 xmax = this.rect.xmax();
+        //                 ymin = this.rect.ymin();
+        //                 ymax = this.rect.ymax();
+        //
+        //                 RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
+        //                 this.right = new KdNode(pNew, rectChild, false);
+        //                 return this.right;
+        //             }
+        //             // ELSE --> Recursive call:
+        //             // Pass the pNew further down the tree
+        //             else {
+        //                 return this.right.put(pNew);
+        //             }
+        //         }
+        //     }
+        //     // ELSE (If Key = y)
+        //     else {
+        //         if (pNew.y() < this.p.y()) {
+        //             // IF No Left Child
+        //             if (this.left == null) {
+        //                 xmin = this.rect.xmin();
+        //                 xmax = this.rect.xmax();
+        //                 ymin = this.rect.ymin();
+        //                 ymax = this.p.y();
+        //
+        //                 RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
+        //                 this.left = new KdNode(pNew, rectChild, true);
+        //                 return this.left;
+        //             }
+        //             // ELSE --> Recursive call:
+        //             // Pass the pNew further down the tree
+        //             else {
+        //                 return this.left.put(pNew);
+        //             }
+        //
+        //         }
+        //         else {
+        //             // IF No Right Child
+        //             if (this.right == null) {
+        //                 xmin = this.rect.xmin();
+        //                 xmax = this.rect.xmax();
+        //                 ymin = this.p.y();
+        //                 ymax = this.rect.ymax();
+        //
+        //                 RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
+        //                 this.right = new KdNode(pNew, rectChild, true);
+        //                 return this.right;
+        //             }
+        //             // ELSE --> Recursive call:
+        //             // Pass the pNew further down the tree
+        //             else {
+        //                 return this.right.put(pNew);
+        //             }
+        //         }
+        //     }
+        //
         // }
-
-        // ***********************************************
-        public KdNode put(Point2D pNew) {
-            double xmin, ymin, xmax, ymax;
-            // IF Key = x
-            if (this.keyIsX) {
-                // IF p_x < pNew_x --> GO LEFT
-                if (pNew.x() < this.p.x()) {
-                    // IF No Left Child
-                    if (this.left == null) {
-
-                        xmin = this.rect.xmin();
-                        xmax = this.p.x();
-                        ymin = this.rect.ymin();
-                        ymax = this.rect.ymax();
-
-                        RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.left = new KdNode(pNew, rectChild, false);
-                        return this.left;
-                    }
-                    // ELSE --> Recursive call:
-                    // Pass the pNew further down the tree
-                    else {
-                        return this.left.put(pNew);
-                    }
-                }
-                // ELSE --> GO RIGHT
-                else {
-                    // IF No Right Child
-                    if (this.right == null) {
-
-                        xmin = this.p.x();
-                        xmax = this.rect.xmax();
-                        ymin = this.rect.ymin();
-                        ymax = this.rect.ymax();
-
-                        RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.right = new KdNode(pNew, rectChild, false);
-                        return this.right;
-                    }
-                    // ELSE --> Recursive call:
-                    // Pass the pNew further down the tree
-                    else {
-                        return this.right.put(pNew);
-                    }
-                }
-            }
-            // ELSE (If Key = y)
-            else {
-                if (pNew.y() < this.p.y()) {
-                    // IF No Left Child
-                    if (this.left == null) {
-                        xmin = this.rect.xmin();
-                        xmax = this.rect.xmax();
-                        ymin = this.rect.ymin();
-                        ymax = this.p.y();
-
-                        RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.left = new KdNode(pNew, rectChild, true);
-                        return this.left;
-                    }
-                    // ELSE --> Recursive call:
-                    // Pass the pNew further down the tree
-                    else {
-                        return this.left.put(pNew);
-                    }
-
-                }
-                else {
-                    // IF No Right Child
-                    if (this.right == null) {
-                        xmin = this.rect.xmin();
-                        xmax = this.rect.xmax();
-                        ymin = this.p.y();
-                        ymax = this.rect.ymax();
-
-                        RectHV rectChild = new RectHV(xmin, ymin, xmax, ymax);
-                        this.right = new KdNode(pNew, rectChild, true);
-                        return this.right;
-                    }
-                    // ELSE --> Recursive call:
-                    // Pass the pNew further down the tree
-                    else {
-                        return this.right.put(pNew);
-                    }
-                }
-            }
-
-        }
     }
 
     // ***********************************************
@@ -175,21 +169,178 @@ public class KdTree {
 
     // ***********************************************
     // add the point to the set (if it is not already in the set)
+
+    // public void insert(Point2D p) {
+    //     if (this.size == 0) {
+    //         this.root = new KdNode(p);
+    //
+    //     }
+    //     else {
+    //         this.root.put(p);
+    //     }
+    //     this.size++;
+    // }
     public void insert(Point2D p) {
+        if (p == null) throw new IllegalArgumentException(
+                "calls insert() with a null value, instead of a Point");
+        // IF this is the FIRST Node --> Create the Root Node
         if (this.size == 0) {
             this.root = new KdNode(p);
+            this.size++;
 
         }
+        // IF NOT Root --> call the (recursive) put() method
         else {
-            this.root.put(p);
+            this.put(this.root, this.root.rect, p, this.root.keyIsX);
         }
-        this.size++;
+
+    }
+
+    // ***********************************************
+    private KdNode put(KdNode node, RectHV rect, Point2D pNew, boolean keyIsX) {
+        // BASE CASE:
+        // IF the Node is NULL --> We must have reached a leaf
+        // THEN Create a new Node
+        if (node == null) {
+            this.size++;
+            return new KdNode(pNew, rect, keyIsX);
+        }
+        // IF Node is NOT NULL
+        // THEN Compare pNew to node.p
+        else {
+            // Compare the point pNew to this node's point p:
+            int cmp;
+            double xmin, ymin, xmax, ymax;
+            RectHV rectChild;
+            if (node.keyIsX) {
+                if (pNew.x() < node.p.x()) {
+                    cmp = -1;
+
+                    if (node.left == null) {
+                        xmin = node.rect.xmin();
+                        xmax = node.p.x();
+                        ymin = node.rect.ymin();
+                        ymax = node.rect.ymax();
+                        rectChild = new RectHV(xmin, ymin, xmax, ymax);
+                    }
+                    else {
+                        rectChild = node.left.rect;
+                    }
+                }
+                else if (pNew.x() > node.p.x() || // OR... tie-breaker condition
+                        (pNew.x() == node.p.x() && pNew.y() != node.p.y())) {
+                    cmp = 1;
+
+                    if (node.right == null) {
+                        xmin = node.p.x();
+                        xmax = node.rect.xmax();
+                        ymin = node.rect.ymin();
+                        ymax = node.rect.ymax();
+                        rectChild = new RectHV(xmin, ymin, xmax, ymax);
+                    }
+                    else {
+                        rectChild = node.right.rect;
+                    }
+                }
+                else {
+                    cmp = 0;
+                    rectChild = node.rect;
+                }
+            }
+            else {
+                if (pNew.y() < node.p.y()) {
+                    cmp = -1;
+
+                    if (node.left == null) {
+                        xmin = node.rect.xmin();
+                        xmax = node.rect.xmax();
+                        ymin = node.rect.ymin();
+                        ymax = node.p.y();
+                        rectChild = new RectHV(xmin, ymin, xmax, ymax);
+                    }
+                    else {
+                        rectChild = node.left.rect;
+                    }
+                }
+                else if (pNew.y() > node.p.y() || // OR... tie-breaker condition
+                        (pNew.y() == node.p.y() && pNew.x() != node.p.x())) {
+                    cmp = 1;
+
+                    if (node.right == null) {
+                        xmin = node.rect.xmin();
+                        xmax = node.rect.xmax();
+                        ymin = node.p.y();
+                        ymax = node.rect.ymax();
+                        rectChild = new RectHV(xmin, ymin, xmax, ymax);
+                    }
+                    else {
+                        rectChild = node.right.rect;
+                    }
+                }
+                else {
+                    cmp = 0;
+                    rectChild = node.rect;
+                }
+            }
+            if (cmp < 0) node.left = this.put(node.left, rectChild, pNew, !node.keyIsX);
+            if (cmp > 0) node.right = this.put(node.right, rectChild, pNew, !node.keyIsX);
+            return node;
+        }
+
     }
 
     // ***********************************************
     // does the set contain point p?
     public boolean contains(Point2D p) {
         return this.get(p) != null;
+    }
+
+    // ***********************************************
+    // p.x() > n.p.x() || // OR... tie-breaker condition
+    //         (p.x() == n.p.x() && p.y() != n.p.y())
+    private KdNode get(Point2D p) {
+        if (p == null) throw new IllegalArgumentException("calls get() with a null key");
+        KdNode n = this.root;
+        boolean keyIsX = true;
+        while (n != null) {
+            if (keyIsX) {
+                if (p.x() < n.p.x()) {
+                    n = n.left;
+                }
+                else if (p.x() > n.p.x() || // OR... tie-breaker condition
+                        (p.x() == n.p.x() && p.y() != n.p.y())) {
+                    n = n.right;
+                }
+                else {
+                    if (p.y() == n.p.y()) {
+                        return n;
+                    }
+                    // else {
+                    //     return null;
+                    // }
+                }
+            }
+            else {
+                if (p.y() < n.p.y()) {
+                    n = n.left;
+                }
+                else if (p.y() > n.p.y() || // OR... tie-breaker condition
+                        (p.y() == n.p.y() && p.x() != n.p.x())) {
+                    n = n.right;
+                }
+                else {
+                    if (p.x() == n.p.x()) {
+                        return n;
+                    }
+                    // else {
+                    //     return null;
+                    // }
+                }
+            }
+            // Update the key flag:
+            keyIsX = !keyIsX;
+        }
+        return null;
     }
 
     // ***********************************************
@@ -253,8 +404,11 @@ public class KdTree {
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
         KdNode n = this.root;
-        if (this.root == null) {
-            throw new java.lang.IllegalArgumentException("No neighbors: empty tree!");
+        // if (this.root == null) {
+        //     throw new IllegalArgumentException("No neighbors: empty tree!");
+        // }
+        if (p == null) {
+            throw new IllegalArgumentException("Have to provide a Point!");
         }
         Point2D pNearest = n.p;
         pNearest = nearestRecursive(p, n, pNearest);
@@ -341,50 +495,6 @@ public class KdTree {
             String[] args) {
         unitTestCountAndDraw(args, true);
         unitTestRange(args, new RectHV(0.02, 0.02, 0.6, 0.6), true);
-    }
-
-    // ***********************************************
-    private KdNode get(Point2D p) {
-        if (p == null) throw new IllegalArgumentException("calls get() with a null key");
-        KdNode n = this.root;
-        boolean keyIsX = true;
-        while (n != null) {
-            if (keyIsX) {
-                if (p.x() < n.p.x()) {
-                    n = n.left;
-                }
-                else if (p.x() > n.p.x()) {
-                    n = n.right;
-                }
-                else {
-                    if (p.y() == n.p.y()) {
-                        return n;
-                    }
-                    else {
-                        return null;
-                    }
-                }
-            }
-            else {
-                if (p.y() < n.p.y()) {
-                    n = n.left;
-                }
-                else if (p.y() > n.p.y()) {
-                    n = n.right;
-                }
-                else {
-                    if (p.x() == n.p.x()) {
-                        return n;
-                    }
-                    else {
-                        return null;
-                    }
-                }
-            }
-            // Update the key flag:
-            keyIsX = !keyIsX;
-        }
-        return null;
     }
 
     // ***********************************************

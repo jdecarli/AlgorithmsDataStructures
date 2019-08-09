@@ -47,8 +47,11 @@ public class PointSET {
         if (p == null) {
             throw new IllegalArgumentException();
         }
-        this.redBlackTree.add(p);
-        this.setSize++;
+        if (!this.contains(p)) {
+            this.redBlackTree.add(p);
+            this.setSize++;
+        }
+
     }
 
     // does the set contain point p?
