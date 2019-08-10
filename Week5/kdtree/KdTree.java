@@ -408,7 +408,8 @@ public class KdTree {
     public Point2D nearest(Point2D p) {
         KdNode n = this.root;
         if (this.root == null) {
-            throw new IllegalArgumentException("No neighbors: empty tree!");
+            // throw new IllegalArgumentException("No neighbors: empty tree!");
+            return null;
         }
         if (p == null) {
             throw new IllegalArgumentException("nearest(p): Have to provide a Point!");
@@ -420,7 +421,7 @@ public class KdTree {
 
     private Point2D nearestRecursive(Point2D p, KdNode node, Point2D pNearest) {
         // Sanity check:
-        // IF the node is NULL,
+        // IF the node is NULL (i.e., we reached a branch end)
         // THEN return the current pNearest
         if (node == null) {
             return pNearest;
@@ -456,10 +457,9 @@ public class KdTree {
                 node.right.rect.distanceSquaredTo(p) > minDistSquared) {
             pNearest = nearestRecursive(p, node.left, pNearest);
         }
-
-
         // If pruning is not possible at this stage
         // --> check both branches
+
         // IF Splitting by X
         else if (node.keyIsX) {
             // IF the point p lies LEFT of the split line
