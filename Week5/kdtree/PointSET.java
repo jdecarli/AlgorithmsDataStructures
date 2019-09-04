@@ -67,12 +67,12 @@ public class PointSET {
 
         // TODO: draw lines
         // Horizontal (blue)
-        StdDraw.setPenColor(StdDraw.BLUE);
-        StdDraw.setPenRadius();
+        // StdDraw.setPenColor(StdDraw.BLUE);
+        // StdDraw.setPenRadius();
 
         // Vertical (red)
-        StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.setPenRadius();
+        // StdDraw.setPenColor(StdDraw.RED);
+        // StdDraw.setPenRadius();
 
         // Use StdDraw.setPenColor(StdDraw.BLACK) and StdDraw.setPenRadius(0.01) before before drawing the points;
         // use StdDraw.setPenColor(StdDraw.RED) or StdDraw.setPenColor(StdDraw.BLUE) and StdDraw.setPenRadius()
@@ -170,6 +170,8 @@ public class PointSET {
 
         // Show ALL points
         GetAll(set);
+
+        set.draw();
     }
 
     // TODO: DELETE BELOW METHODS ONCE READY ----------------------
