@@ -84,13 +84,72 @@ public class KdTree {
                 }
             }
         }
+
+        public Point2D search(Point2D point) {
+            // Empty point in the node
+            if (this.p == null) {
+                Debug("search | empty node");
+                return null;
+            }
+            else {
+                // Equals to point in the node
+                if (this.p.equals(point))
+                    return this.p;
+
+                // X or even | at the root we use the x-coordinate
+                if (this._isXCoord) {
+                    Debug("search | X");
+
+                    // X | if the point to be inserted has a smaller
+                    // x-coordinate than the point at the root
+                    if (point.x() < this.p.x()) {
+                        Debug("search | X - go left");
+                        // go left
+                        if (this.lb == null)
+                            return null;
+
+                        return this.lb.search(point);
+                    }
+                    else {
+                        Debug("search | X - go right");
+                        // otherwise go right
+                        if (this.rt == null)
+                            return null;
+
+                        return this.rt.search(point);
+                    }
+                }
+                // Y or odd | then at the next level, we use the y-coordinate
+                else {
+                    Debug("search | Y");
+                    // Y | if the point to be inserted
+                    // has a smaller y-coordinate than the point in the node
+                    if (point.y() < this.p.y()) {
+                        Debug("search | Y - go left");
+                        // go left
+                        if (this.lb == null)
+                            return null;
+
+                        return this.lb.search(point);
+                    }
+                    else {
+                        Debug("search | Y - go right");
+                        // otherwise go right); then at the next level the x-coordinate, and so forth.
+                        if (this.rt == null)
+                            return null;
+
+                        return this.rt.search(point);
+                    }
+                }
+            }
+        }
     }
 
     private Node _rootNode;
     private int _size = 0;
 
     public KdTree() {
-        _rootNode = new Node();
+        this._rootNode = new Node();
     }
 
     public boolean isEmpty()                      // is the set empty?
@@ -115,7 +174,6 @@ public class KdTree {
         // increase size
         this._size++;
 
-        // TODO: add node
         // at the root we use the x-coordinate (if the point to be inserted has a smaller
         // x-coordinate than the point at the root, go left; otherwise go right);
         // then at the next level, we use the y-coordinate (if the point to be inserted
@@ -129,9 +187,12 @@ public class KdTree {
     {
         if (p == null)
             throw new IllegalArgumentException();
+        
+        // Returns null when not found
+        if (this._rootNode.search(p) == null)
+            return false;
 
-        // TODO: search
-        return false;
+        return true;
     }
 
     public void draw()                         // draw all points to standard draw
@@ -194,14 +255,18 @@ public class KdTree {
 
         StdOut.println("Empty (false): " + set.isEmpty());
         StdOut.println("Size: " + set.size());
-        /*
-        StdOut.println("Contains ----------------------------");
-        Point2D point2 = new Point2D(0, 0.9);
-        set.insert(point2);
-        StdOut.println("Contains p1: " + set.contains(point));
-        Point2D point3 = new Point2D(0.1, 0.4);
-        StdOut.println("Contains p3 (false): " + set.contains(point3));
 
+
+        StdOut.println("\nContains ----------------------------");
+        StdOut.println("Insert p5 - same as p4");
+        Point2D point5 = new Point2D(0.4, 0.7);
+        set.insert(point5);
+        StdOut.println("Contains p1 (true): " + set.contains(point5));
+        Point2D point6 = new Point2D(0.1, 0.4);
+        StdOut.println("Insert p6 - not in group");
+        StdOut.println("Contains p3 (false): " + set.contains(point6));
+
+        /*
         StdOut.println("Size --------------------------------");
         StdOut.println("Size (2): " + set.size());
 
@@ -236,17 +301,17 @@ public class KdTree {
             StdOut.println("Debug - " + message);
     }
 
-    /*
-    // exposed testing method
-    private static void GetAll(kdTree set) {
-        StdOut.println("\nAll points ------------------------------");
-        for (Point2D p : set.GetAll()) {
-            StdOut.println(p);
+        /*
+        // exposed testing method
+        private static void GetAll(kdTree set) {
+            StdOut.println("\nAll points ------------------------------");
+            for (Point2D p : set.GetAll()) {
+                StdOut.println(p);
+            }
         }
-    }
 
-    public Iterable<Point2D> GetAll() {
-        return this.internalPointSet;
-    }
-    */
+        public Iterable<Point2D> GetAll() {
+            return this.internalPointSet;
+        }
+        */
 }
