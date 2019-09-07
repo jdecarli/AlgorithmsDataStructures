@@ -31,11 +31,13 @@ public class KdTree {
             this._isXCoord = isXCoord;
             Debug("Node Constructor with args | this._isXCoord: " + this._isXCoord);
         }
-
-        public void insert(Point2D point) {
+        
+        public void insert(Point2D point, RectHV area) {
             if (this.p == null) {
                 Debug("insert | empty node");
                 this.p = point;
+                this.rect = area == null ? new RectHV(0, 0, 1, 1) : area;
+                Debug("insert | empty node - rect: " + this.rect);
             }
             else {
                 // X or even | at the root we use the x-coordinate
@@ -49,7 +51,14 @@ public class KdTree {
                         if (this.lb == null)
                             this.lb = new Node(!this._isXCoord);
 
-                        this.lb.insert(point);
+                        // X | overwrite right side
+                        this.lb.insert(point, new RectHV(
+                                this.rect.xmin(),
+                                this.rect.ymin(),
+                                this.p.x(),
+                                this.rect.ymax()
+                        ));
+                        Debug("insert | X - rect: " + this.lb.rect);
                     }
                     else {
                         Debug("insert | X - go right");
@@ -57,7 +66,14 @@ public class KdTree {
                         if (this.rt == null)
                             this.rt = new Node(!this._isXCoord);
 
-                        this.rt.insert(point);
+                        // X | overwrite left side
+                        this.rt.insert(point, new RectHV(
+                                this.p.x(),
+                                this.rect.ymin(),
+                                this.rect.xmax(),
+                                this.rect.ymax()
+                        ));
+                        Debug("insert | X - rect: " + this.rt.rect);
                     }
                 }
                 // Y or odd | then at the next level, we use the y-coordinate
@@ -71,7 +87,14 @@ public class KdTree {
                         if (this.lb == null)
                             this.lb = new Node(!this._isXCoord);
 
-                        this.lb.insert(point);
+                        // Y | overwrite top side
+                        this.lb.insert(point, new RectHV(
+                                this.rect.xmin(),
+                                this.rect.ymin(),
+                                this.rect.xmax(),
+                                this.p.y()
+                        ));
+                        Debug("insert | Y - rect: " + this.lb.rect);
                     }
                     else {
                         Debug("insert | Y - go right");
@@ -79,7 +102,14 @@ public class KdTree {
                         if (this.rt == null)
                             this.rt = new Node(!this._isXCoord);
 
-                        this.rt.insert(point);
+                        // Y | overwrite bottom side
+                        this.rt.insert(point, new RectHV(
+                                this.rect.xmin(),
+                                this.p.y(),
+                                this.rect.xmax(),
+                                this.rect.ymax()
+                        ));
+                        Debug("insert | Y - rect: " + this.rt.rect);
                     }
                 }
             }
@@ -99,7 +129,6 @@ public class KdTree {
                 // X or even | at the root we use the x-coordinate
                 if (this._isXCoord) {
                     Debug("search | X");
-
                     // X | if the point to be inserted has a smaller
                     // x-coordinate than the point at the root
                     if (point.x() < this.p.x()) {
@@ -143,6 +172,44 @@ public class KdTree {
                 }
             }
         }
+
+        public void draw() {
+            // Empty point in the node
+            if (this.p == null) {
+                Debug("draw | empty node no draw");
+                // no draw - end
+            }
+            else {
+                // Draw point
+                Debug("draw | point: " + this.p);
+                StdDraw.setPenColor(StdDraw.BLACK);
+                StdDraw.setPenRadius(0.01);
+                this.p.draw();
+
+                // X or even | at the root we use the x-coordinate
+                if (this._isXCoord) {
+                    Debug("draw | X - horizontal line");
+                    // Horizontal (blue)
+                    StdDraw.setPenColor(StdDraw.RED);
+                    StdDraw.setPenRadius();
+                    StdDraw.line(this.p.x(), this.rect.ymin(), this.p.x(), this.rect.ymax());
+                }
+                // Y or odd | then at the next level, we use the y-coordinate
+                else {
+                    Debug("draw | Y - vertical line");
+                    // Vertical (red)
+                    StdDraw.setPenColor(StdDraw.BLUE);
+                    StdDraw.setPenRadius();
+                    StdDraw.line(this.rect.xmin(), this.p.y(), this.rect.xmax(), this.p.y());
+                }
+
+                if (this.lb != null)
+                    this.lb.draw();
+
+                if (this.rt != null)
+                    this.rt.draw();
+            }
+        }
     }
 
     private Node _rootNode;
@@ -180,14 +247,14 @@ public class KdTree {
         // has a smaller y-coordinate than the point in the node, go left; otherwise go
         // right); then at the next level the x-coordinate, and so forth.
 
-        this._rootNode.insert(p);
+        this._rootNode.insert(p, null);
     }
 
     public boolean contains(Point2D p)            // does the set contain point p?
     {
         if (p == null)
             throw new IllegalArgumentException();
-        
+
         // Returns null when not found
         if (this._rootNode.search(p) == null)
             return false;
@@ -198,8 +265,8 @@ public class KdTree {
     public void draw()                         // draw all points to standard draw
     {
         // Draw a point (black)
-        StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.setPenRadius(0.01);
+        // StdDraw.setPenColor(StdDraw.BLACK);
+        // StdDraw.setPenRadius(0.01);
 
         // TODO: draw lines
         // Horizontal (blue)
@@ -213,12 +280,16 @@ public class KdTree {
         // Use StdDraw.setPenColor(StdDraw.BLACK) and StdDraw.setPenRadius(0.01) before before drawing the points;
         // use StdDraw.setPenColor(StdDraw.RED) or StdDraw.setPenColor(StdDraw.BLUE) and StdDraw.setPenRadius()
         // before drawing the splitting lines.
+
+        this._rootNode.draw();
     }
 
     public Iterable<Point2D> range(
             RectHV rect)             // all points that are inside the rectangle (or on the boundary)
     {
         // TODO: range
+
+
         return new SET<Point2D>();
     }
 
@@ -266,6 +337,25 @@ public class KdTree {
         StdOut.println("Insert p6 - not in group");
         StdOut.println("Contains p3 (false): " + set.contains(point6));
 
+        //set.draw();
+
+        StdOut.println("---- test rect --------");
+        double xmin = 0.05;
+        double ymin = 0.1;
+        double xmax = 0.2;
+        double ymax = 0.3;
+        RectHV testRec = new RectHV(xmin, ymin, xmax, ymax);
+        Debug("testRec: " + testRec.toString());
+        //testRec.draw();
+
+        StdOut.println("---- test line --------");
+        double x0 = 0;
+        double y0 = 0.5;
+        double x1 = 0.5;
+        double y1 = 0.5;
+        StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.setPenRadius();
+        //StdDraw.line(x0, y0, x1, y1);
         /*
         StdOut.println("Size --------------------------------");
         StdOut.println("Size (2): " + set.size());
