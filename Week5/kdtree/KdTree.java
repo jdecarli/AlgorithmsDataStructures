@@ -6,9 +6,10 @@
 
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
-import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
+
+import java.util.HashSet;
 
 public class KdTree {
 
@@ -231,6 +232,38 @@ public class KdTree {
                     this.rt.draw();
             }
         }
+
+        public Iterable<Point2D> range(Node tree, RectHV area, HashSet<Point2D> col) {
+            // To find all points contained in a given query rectangle,
+            // start at the root and
+            // recursively search for points in both subtrees using the following pruning rule:
+            // if the query rectangle does not intersect the rectangle corresponding to a node,
+            // there is no need to explore that node (or its subtrees).
+            // A subtree is searched only if it might contain a point contained in the query
+            // rectangle.
+
+            // Empty point in the node
+            if (tree.p == null) {
+                Debug("range | empty node");
+                return col;
+            }
+            else {
+                Debug("range | add point");
+                if (area.contains(tree.p))
+                    col.add(tree.p);
+
+                Debug("range | Left tree");
+                if (tree.lb != null && tree.lb.rect.intersects(area))
+                    range(tree.lb, area, col);
+
+                Debug("range | Right tree");
+                if (tree.rt != null && tree.rt.rect.intersects(area))
+                    range(tree.rt, area, col);
+            }
+
+            return col;
+        }
+
     }
 
     private Node _rootNode;
@@ -308,10 +341,9 @@ public class KdTree {
     public Iterable<Point2D> range(
             RectHV rect)             // all points that are inside the rectangle (or on the boundary)
     {
-        // TODO: range
+        HashSet<Point2D> result = new HashSet<Point2D>();
 
-
-        return new SET<Point2D>();
+        return this._rootNode.range(this._rootNode, rect, result);
     }
 
     public Point2D nearest(
@@ -358,7 +390,11 @@ public class KdTree {
         StdOut.println("Insert p6 - not in group");
         StdOut.println("Contains p3 (false): " + set.contains(point6));
 
-        //set.draw();
+        StdOut.println("\nRange --------------------------------");
+        RectHV area = new RectHV(0, 0, 1, 1);
+        for (Point2D p : set.range(area)) {
+            StdOut.println("range | " + p);
+        }
 
         StdOut.println("---- test rect --------");
         double xmin = 0.05;
@@ -377,6 +413,8 @@ public class KdTree {
         StdDraw.setPenColor(StdDraw.RED);
         StdDraw.setPenRadius();
         //StdDraw.line(x0, y0, x1, y1);
+
+
         /*
         StdOut.println("Size --------------------------------");
         StdOut.println("Size (2): " + set.size());
@@ -405,7 +443,7 @@ public class KdTree {
 
     // TODO: DELETE BELOW METHODS ONCE READY ----------------------
 
-    private static boolean IsDebugEnabled = true;
+    private static boolean IsDebugEnabled = false;
 
     private static void Debug(String message) {
         if (IsDebugEnabled)
