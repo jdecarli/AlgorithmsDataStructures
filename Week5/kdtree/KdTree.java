@@ -233,6 +233,14 @@ public class KdTree {
             }
         }
 
+        /**
+         * Method to find all points that belong to a given area
+         *
+         * @param tree Node to check
+         * @param area Area to search
+         * @param col  Initialized collection of points
+         * @return A collection of points
+         */
         public Iterable<Point2D> range(Node tree, RectHV area, HashSet<Point2D> col) {
             // To find all points contained in a given query rectangle,
             // start at the root and
@@ -349,6 +357,18 @@ public class KdTree {
     public Point2D nearest(
             Point2D p)             // a nearest neighbor in the set to point p; null if the set is empty
     {
+        // To find a closest point to a given query point, start at the root and recursively
+        // search in both subtrees using the following pruning rule:
+        // if the closest point discovered so far is closer than the distance between the
+        // query point and the rectangle corresponding to a node, there is no need to
+        // explore that node (or its subtrees). That is, search a node only only if it
+        // might contain a point that is closer than the best one found so far.
+        // The effectiveness of the pruning rule depends on quickly finding a nearby point.
+        // To do this, organize the recursive method so that when there are two possible
+        // subtrees to go down, you always choose the subtree that is on the same side of
+        // the splitting line as the query point as the first subtree to explore—the closest
+        // point found while exploring the first subtree may enable pruning of the second subtree.
+
         // TODO: nearest
         return new Point2D(0, 0);
     }
