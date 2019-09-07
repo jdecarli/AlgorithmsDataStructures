@@ -12,7 +12,9 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class KdTree {
 
-    // Class to implement 2d-tree
+    /**
+     * Internal class to implement the 2d-tree
+     */
     private static class Node {
         private boolean _isXCoord;
 
@@ -31,7 +33,15 @@ public class KdTree {
             this._isXCoord = isXCoord;
             Debug("Node Constructor with args | this._isXCoord: " + this._isXCoord);
         }
-        
+
+        /**
+         * Method to perform insertion of a point into the Node internal class
+         *
+         * @param point This is the point to insert that will be inserted according to the 2dtree
+         *              rules
+         * @param area  This argument is used internally in recursion. No matter what, will be
+         *              ignored
+         */
         public void insert(Point2D point, RectHV area) {
             if (this.p == null) {
                 Debug("insert | empty node");
@@ -115,6 +125,12 @@ public class KdTree {
             }
         }
 
+        /**
+         * Method to perform the search thru the 2d-tree
+         *
+         * @param point Point to be searched thru branches
+         * @return A point if found, null if not found
+         */
         public Point2D search(Point2D point) {
             // Empty point in the node
             if (this.p == null) {
@@ -173,6 +189,11 @@ public class KdTree {
             }
         }
 
+        /**
+         * Method to draw all of the points to standard draw in black and the subdivisions in red
+         * (for vertical splits) and blue (for horizontal splits). This method need not be
+         * efficient—it is primarily for debugging
+         */
         public void draw() {
             // Empty point in the node
             if (this.p == null) {
