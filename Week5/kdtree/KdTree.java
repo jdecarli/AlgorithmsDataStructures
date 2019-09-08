@@ -6,10 +6,9 @@
 
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
-
-import java.util.HashSet;
 
 public class KdTree {
 
@@ -241,7 +240,7 @@ public class KdTree {
          * @param col  Initialized collection of points
          * @return A collection of points
          */
-        public Iterable<Point2D> range(Node tree, RectHV area, HashSet<Point2D> col) {
+        public Iterable<Point2D> range(Node tree, RectHV area, SET<Point2D> col) {
             // To find all points contained in a given query rectangle,
             // start at the root and
             // recursively search for points in both subtrees using the following pruning rule:
@@ -283,10 +282,12 @@ public class KdTree {
         public Point2D nearest(Point2D target, Node tree, Point2D closest) {
 
             // DEBUG -------
+            /*
             String closestValue = closest == null ? "null" : closest.toString();
             String nodePoint = tree == null ? "null" : tree.p.toString();
             Debug("nearest | start / target: " + target.toString() + " / closest: " + closestValue
                           + " / tree: " + nodePoint);
+            */
 
             // Flaws in this method:
             // - Closest is wrongly propagated because its inheritance overwrittes the values
@@ -336,13 +337,13 @@ public class KdTree {
                         Debug("nearest | going left then right");
                         closest = nearest(target, tree.lb, closest);
                         // this should be executed to check all values
-                        //nearest(target, tree.rt, closest);
+                        closest = nearest(target, tree.rt, closest);
                     }
                     else {
                         Debug("nearest | going right then left");
                         closest = nearest(target, tree.rt, closest);
                         // this should be executed to check all values
-                        //nearest(target, tree.lb, closest);
+                        closest = nearest(target, tree.lb, closest);
                     }
                 }
                 else if (isLeftNodePossible) {
@@ -360,7 +361,7 @@ public class KdTree {
         }
     }
 
-    private Node _rootNode;
+    private final Node _rootNode;
     private int _size = 0;
 
     public KdTree() {
@@ -438,7 +439,7 @@ public class KdTree {
         if (rect == null)
             throw new IllegalArgumentException();
 
-        HashSet<Point2D> result = new HashSet<Point2D>();
+        SET<Point2D> result = new SET<Point2D>();
 
         return this._rootNode.range(this._rootNode, rect, result);
     }
@@ -509,10 +510,12 @@ public class KdTree {
         }
 
         StdOut.println("\nNearest -------------------------------");
-        Point2D nearestToSearch = new Point2D(0.39, 0.69);
-        StdOut.println("nearest from " + nearestToSearch + ": " + set.nearest(nearestToSearch));
+        //Point2D nearestToSearch = new Point2D(0.39, 0.69);
+        KdTree set2 = new KdTree();
+        Point2D nearestToSearch = new Point2D(0, 0);
+        StdOut.println("nearest from " + nearestToSearch + ": " + set2.nearest(nearestToSearch));
 
-        set.draw();
+        //set.draw();
         /*
         StdOut.println("---- test rect --------");
         double xmin = 0.05;
@@ -561,7 +564,7 @@ public class KdTree {
 
     // TODO: DELETE BELOW METHODS ONCE READY ----------------------
 
-    private static boolean IsDebugEnabled = false;
+    private static boolean IsDebugEnabled = true;
 
     private static void Debug(String message) {
         if (IsDebugEnabled)

@@ -169,7 +169,7 @@ public class PointSET {
         StdOut.println("Nearest (0.2, 0.2): " + result);
 
         // Show ALL points
-        GetAll(set);
+        //GetAll(set);
 
         set.draw();
     }
@@ -181,17 +181,5 @@ public class PointSET {
     private static void Debug(String message) {
         if (IsDebugEnabled)
             StdOut.println("Debug - " + message);
-    }
-
-    // exposed testing method
-    private static void GetAll(PointSET set) {
-        StdOut.println("\nAll points ------------------------------");
-        for (Point2D p : set.GetAll()) {
-            StdOut.println(p);
-        }
-    }
-
-    public Iterable<Point2D> GetAll() {
-        return this.internalPointSet;
     }
 }
