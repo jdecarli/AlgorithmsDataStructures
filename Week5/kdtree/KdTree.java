@@ -40,7 +40,7 @@ public class KdTree {
          *
          * @param point This is the point to insert that will be inserted according to the 2dtree
          *              rules
-         * @param area  This argument is used internally in recursion. No matter what, will be
+         * @param area  This argument is used internally for recursion. No matter what, will be
          *              ignored
          */
         public void insert(Point2D point, RectHV area) {
@@ -272,6 +272,92 @@ public class KdTree {
             return col;
         }
 
+        /**
+         * Method to recursevily search thru the trees for the closest point
+         *
+         * @param target  Query point
+         * @param tree    This arguent is used for recursion. Tree to search
+         * @param closest This argument is used for recursion. Closest point so far
+         * @return Null if nothing was found (in case of an empty tree). Nearest/Closest point
+         */
+        public Point2D nearest(Point2D target, Node tree, Point2D closest) {
+
+            // DEBUG -------
+            String closestValue = closest == null ? "null" : closest.toString();
+            String nodePoint = tree == null ? "null" : tree.p.toString();
+            Debug("nearest | start / target: " + target.toString() + " / closest: " + closestValue
+                          + " / tree: " + nodePoint);
+
+            // Flaws in this method:
+            // - Closest is wrongly propagated because its inheritance overwrittes the values
+            // - AI: break down into 2 methods, one that does recursion, the other that stores
+            // and compares the closests points
+            // ---------------
+
+            if (tree == null || tree.p == null) {
+                Debug("nearest | empty node");
+                return closest;
+            }
+            else {
+                // Same
+                Debug("nearest | p equal target: " + tree.p.equals(target));
+                if (tree.p.equals(target))
+                    return tree.p;
+
+                // Closest null
+                if (closest == null)
+                    closest = tree.p;
+                else {
+                    // this.p is closer than `closest`
+                    Debug("nearest | p closer than closest: " + (tree.p.distanceSquaredTo(target)
+                            < closest.distanceSquaredTo(target)));
+                    if (tree.p.distanceSquaredTo(target) < closest.distanceSquaredTo(target))
+                        closest = tree.p;
+                }
+
+                // PRE-CONDITIONS
+                // IF closest point discovered so far is closer than the distance between the
+                // query point and the rectangle corresponding to a node | CHOOSE THE OTHER ONE
+                // search a node only only if it might contain a point that is closer than the
+                // best one found so far.
+                boolean isLeftNodePossible = tree.lb != null
+                        && closest.distanceSquaredTo(target) > tree.lb.rect
+                        .distanceSquaredTo(target);
+
+                boolean isRightNodePossible = tree.rt != null
+                        && closest.distanceSquaredTo(target) > tree.rt.rect
+                        .distanceSquaredTo(target);
+
+                // PRUNING
+                // search needs to go to both branches
+                // go FIRST to the one the query point belongs (rectangle that contains the query point)
+                if (isLeftNodePossible && isRightNodePossible) {
+                    if (tree.lb.rect.contains(target)) {
+                        Debug("nearest | going left then right");
+                        closest = nearest(target, tree.lb, closest);
+                        // this should be executed to check all values
+                        //nearest(target, tree.rt, closest);
+                    }
+                    else {
+                        Debug("nearest | going right then left");
+                        closest = nearest(target, tree.rt, closest);
+                        // this should be executed to check all values
+                        //nearest(target, tree.lb, closest);
+                    }
+                }
+                else if (isLeftNodePossible) {
+                    Debug("nearest | going only possible left");
+                    closest = nearest(target, tree.lb, closest);
+                }
+                else {
+                    Debug("nearest | going only possible right");
+                    closest = nearest(target, tree.rt, closest);
+                }
+
+                Debug("return closest: " + closest.toString());
+                return closest;
+            }
+        }
     }
 
     private Node _rootNode;
@@ -349,6 +435,9 @@ public class KdTree {
     public Iterable<Point2D> range(
             RectHV rect)             // all points that are inside the rectangle (or on the boundary)
     {
+        if (rect == null)
+            throw new IllegalArgumentException();
+
         HashSet<Point2D> result = new HashSet<Point2D>();
 
         return this._rootNode.range(this._rootNode, rect, result);
@@ -357,6 +446,9 @@ public class KdTree {
     public Point2D nearest(
             Point2D p)             // a nearest neighbor in the set to point p; null if the set is empty
     {
+        if (p == null)
+            throw new IllegalArgumentException();
+
         // To find a closest point to a given query point, start at the root and recursively
         // search in both subtrees using the following pruning rule:
         // if the closest point discovered so far is closer than the distance between the
@@ -370,7 +462,7 @@ public class KdTree {
         // point found while exploring the first subtree may enable pruning of the second subtree.
 
         // TODO: nearest
-        return new Point2D(0, 0);
+        return this._rootNode.nearest(p, this._rootNode, null);
     }
 
     public static void main(String[] args) {
@@ -416,6 +508,12 @@ public class KdTree {
             StdOut.println("range | " + p);
         }
 
+        StdOut.println("\nNearest -------------------------------");
+        Point2D nearestToSearch = new Point2D(0.39, 0.69);
+        StdOut.println("nearest from " + nearestToSearch + ": " + set.nearest(nearestToSearch));
+
+        set.draw();
+        /*
         StdOut.println("---- test rect --------");
         double xmin = 0.05;
         double ymin = 0.1;
@@ -433,7 +531,7 @@ public class KdTree {
         StdDraw.setPenColor(StdDraw.RED);
         StdDraw.setPenRadius();
         //StdDraw.line(x0, y0, x1, y1);
-
+        */
 
         /*
         StdOut.println("Size --------------------------------");
@@ -469,18 +567,4 @@ public class KdTree {
         if (IsDebugEnabled)
             StdOut.println("Debug - " + message);
     }
-
-        /*
-        // exposed testing method
-        private static void GetAll(kdTree set) {
-            StdOut.println("\nAll points ------------------------------");
-            for (Point2D p : set.GetAll()) {
-                StdOut.println(p);
-            }
-        }
-
-        public Iterable<Point2D> GetAll() {
-            return this.internalPointSet;
-        }
-        */
 }
