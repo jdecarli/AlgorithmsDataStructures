@@ -26,12 +26,10 @@ public class KdTree {
         public Node() {
             // if default constructor
             this(true);
-            Debug("Node Constructor with NO args (true)");
         }
 
         private Node(boolean isXCoord) {
             this._isXCoord = isXCoord;
-            Debug("Node Constructor with args | this._isXCoord: " + this._isXCoord);
         }
 
         /**
@@ -44,34 +42,33 @@ public class KdTree {
          */
         public void insert(Point2D point, RectHV area) {
             if (this.p == null) {
-                Debug("insert | empty node");
                 this.p = point;
                 this.rect = area == null ? new RectHV(0, 0, 1, 1) : area;
-                Debug("insert | empty node - rect: " + this.rect);
             }
             else {
+                double rectXmin = this.rect.xmin();
+                double rectYmin = this.rect.ymin();
+                double rectXmax = this.rect.xmax();
+                double rectYmax = this.rect.ymax();
+
                 // X or even | at the root we use the x-coordinate
                 if (this._isXCoord) {
-                    Debug("insert | X");
                     // X | if the point to be inserted has a smaller
                     // x-coordinate than the point at the root
                     if (point.x() < this.p.x()) {
-                        Debug("insert | X - go left");
                         // go left
                         if (this.lb == null)
                             this.lb = new Node(!this._isXCoord);
 
                         // X | overwrite right side
                         this.lb.insert(point, new RectHV(
-                                this.rect.xmin(),
-                                this.rect.ymin(),
+                                rectXmin,
+                                rectYmin,
                                 this.p.x(),
-                                this.rect.ymax()
+                                rectYmax
                         ));
-                        Debug("insert | X - rect: " + this.lb.rect);
                     }
                     else {
-                        Debug("insert | X - go right");
                         // otherwise go right
                         if (this.rt == null)
                             this.rt = new Node(!this._isXCoord);
@@ -79,47 +76,41 @@ public class KdTree {
                         // X | overwrite left side
                         this.rt.insert(point, new RectHV(
                                 this.p.x(),
-                                this.rect.ymin(),
-                                this.rect.xmax(),
-                                this.rect.ymax()
+                                rectYmin,
+                                rectXmax,
+                                rectYmax
                         ));
-                        Debug("insert | X - rect: " + this.rt.rect);
                     }
                 }
                 // Y or odd | then at the next level, we use the y-coordinate
                 else {
-                    Debug("insert | Y");
                     // Y | if the point to be inserted
                     // has a smaller y-coordinate than the point in the node
                     if (point.y() < this.p.y()) {
-                        Debug("insert | Y - go left");
                         // go left
                         if (this.lb == null)
                             this.lb = new Node(!this._isXCoord);
 
                         // Y | overwrite top side
                         this.lb.insert(point, new RectHV(
-                                this.rect.xmin(),
-                                this.rect.ymin(),
-                                this.rect.xmax(),
+                                rectXmin,
+                                rectYmin,
+                                rectXmax,
                                 this.p.y()
                         ));
-                        Debug("insert | Y - rect: " + this.lb.rect);
                     }
                     else {
-                        Debug("insert | Y - go right");
                         // otherwise go right); then at the next level the x-coordinate, and so forth.
                         if (this.rt == null)
                             this.rt = new Node(!this._isXCoord);
 
                         // Y | overwrite bottom side
                         this.rt.insert(point, new RectHV(
-                                this.rect.xmin(),
+                                rectXmin,
                                 this.p.y(),
-                                this.rect.xmax(),
-                                this.rect.ymax()
+                                rectXmax,
+                                rectYmax
                         ));
-                        Debug("insert | Y - rect: " + this.rt.rect);
                     }
                 }
             }
@@ -134,7 +125,6 @@ public class KdTree {
         public Point2D search(Point2D point) {
             // Empty point in the node
             if (this.p == null) {
-                Debug("search | empty node");
                 return null;
             }
             else {
@@ -144,11 +134,9 @@ public class KdTree {
 
                 // X or even | at the root we use the x-coordinate
                 if (this._isXCoord) {
-                    Debug("search | X");
                     // X | if the point to be inserted has a smaller
                     // x-coordinate than the point at the root
                     if (point.x() < this.p.x()) {
-                        Debug("search | X - go left");
                         // go left
                         if (this.lb == null)
                             return null;
@@ -156,7 +144,6 @@ public class KdTree {
                         return this.lb.search(point);
                     }
                     else {
-                        Debug("search | X - go right");
                         // otherwise go right
                         if (this.rt == null)
                             return null;
@@ -166,11 +153,9 @@ public class KdTree {
                 }
                 // Y or odd | then at the next level, we use the y-coordinate
                 else {
-                    Debug("search | Y");
                     // Y | if the point to be inserted
                     // has a smaller y-coordinate than the point in the node
                     if (point.y() < this.p.y()) {
-                        Debug("search | Y - go left");
                         // go left
                         if (this.lb == null)
                             return null;
@@ -178,7 +163,6 @@ public class KdTree {
                         return this.lb.search(point);
                     }
                     else {
-                        Debug("search | Y - go right");
                         // otherwise go right); then at the next level the x-coordinate, and so forth.
                         if (this.rt == null)
                             return null;
@@ -197,19 +181,17 @@ public class KdTree {
         public void draw() {
             // Empty point in the node
             if (this.p == null) {
-                Debug("draw | empty node no draw");
                 // no draw - end
+                return;
             }
             else {
                 // Draw point
-                Debug("draw | point: " + this.p);
                 StdDraw.setPenColor(StdDraw.BLACK);
                 StdDraw.setPenRadius(0.01);
                 this.p.draw();
 
                 // X or even | at the root we use the x-coordinate
                 if (this._isXCoord) {
-                    Debug("draw | X - horizontal line");
                     // Horizontal (blue)
                     StdDraw.setPenColor(StdDraw.RED);
                     StdDraw.setPenRadius();
@@ -217,7 +199,6 @@ public class KdTree {
                 }
                 // Y or odd | then at the next level, we use the y-coordinate
                 else {
-                    Debug("draw | Y - vertical line");
                     // Vertical (red)
                     StdDraw.setPenColor(StdDraw.BLUE);
                     StdDraw.setPenRadius();
@@ -251,19 +232,15 @@ public class KdTree {
 
             // Empty point in the node
             if (tree.p == null) {
-                Debug("range | empty node");
                 return col;
             }
             else {
-                Debug("range | add point");
                 if (area.contains(tree.p))
                     col.add(tree.p);
 
-                Debug("range | Left tree");
                 if (tree.lb != null && tree.lb.rect.intersects(area))
                     range(tree.lb, area, col);
 
-                Debug("range | Right tree");
                 if (tree.rt != null && tree.rt.rect.intersects(area))
                     range(tree.rt, area, col);
             }
@@ -296,12 +273,10 @@ public class KdTree {
             // ---------------
 
             if (tree == null || tree.p == null) {
-                Debug("nearest | empty node");
                 return closest;
             }
             else {
                 // Same
-                Debug("nearest | p equal target: " + tree.p.equals(target));
                 if (tree.p.equals(target))
                     return tree.p;
 
@@ -310,8 +285,6 @@ public class KdTree {
                     closest = tree.p;
                 else {
                     // this.p is closer than `closest`
-                    Debug("nearest | p closer than closest: " + (tree.p.distanceSquaredTo(target)
-                            < closest.distanceSquaredTo(target)));
                     if (tree.p.distanceSquaredTo(target) < closest.distanceSquaredTo(target))
                         closest = tree.p;
                 }
@@ -322,11 +295,11 @@ public class KdTree {
                 // search a node only only if it might contain a point that is closer than the
                 // best one found so far.
                 boolean isLeftNodePossible = tree.lb != null
-                        && closest.distanceSquaredTo(target) > tree.lb.rect
+                        && closest.distanceSquaredTo(target) >= tree.lb.rect
                         .distanceSquaredTo(target);
 
                 boolean isRightNodePossible = tree.rt != null
-                        && closest.distanceSquaredTo(target) > tree.rt.rect
+                        && closest.distanceSquaredTo(target) >= tree.rt.rect
                         .distanceSquaredTo(target);
 
                 // PRUNING
@@ -334,28 +307,23 @@ public class KdTree {
                 // go FIRST to the one the query point belongs (rectangle that contains the query point)
                 if (isLeftNodePossible && isRightNodePossible) {
                     if (tree.lb.rect.contains(target)) {
-                        Debug("nearest | going left then right");
                         closest = nearest(target, tree.lb, closest);
                         // this should be executed to check all values
                         closest = nearest(target, tree.rt, closest);
                     }
                     else {
-                        Debug("nearest | going right then left");
                         closest = nearest(target, tree.rt, closest);
                         // this should be executed to check all values
                         closest = nearest(target, tree.lb, closest);
                     }
                 }
                 else if (isLeftNodePossible) {
-                    Debug("nearest | going only possible left");
                     closest = nearest(target, tree.lb, closest);
                 }
                 else {
-                    Debug("nearest | going only possible right");
                     closest = nearest(target, tree.rt, closest);
                 }
 
-                Debug("return closest: " + closest.toString());
                 return closest;
             }
         }
@@ -413,23 +381,6 @@ public class KdTree {
 
     public void draw()                         // draw all points to standard draw
     {
-        // Draw a point (black)
-        // StdDraw.setPenColor(StdDraw.BLACK);
-        // StdDraw.setPenRadius(0.01);
-
-        // TODO: draw lines
-        // Horizontal (blue)
-        // StdDraw.setPenColor(StdDraw.BLUE);
-        // StdDraw.setPenRadius();
-
-        // Vertical (red)
-        // StdDraw.setPenColor(StdDraw.RED);
-        // StdDraw.setPenRadius();
-
-        // Use StdDraw.setPenColor(StdDraw.BLACK) and StdDraw.setPenRadius(0.01) before before drawing the points;
-        // use StdDraw.setPenColor(StdDraw.RED) or StdDraw.setPenColor(StdDraw.BLUE) and StdDraw.setPenRadius()
-        // before drawing the splitting lines.
-
         this._rootNode.draw();
     }
 
@@ -450,19 +401,6 @@ public class KdTree {
         if (p == null)
             throw new IllegalArgumentException();
 
-        // To find a closest point to a given query point, start at the root and recursively
-        // search in both subtrees using the following pruning rule:
-        // if the closest point discovered so far is closer than the distance between the
-        // query point and the rectangle corresponding to a node, there is no need to
-        // explore that node (or its subtrees). That is, search a node only only if it
-        // might contain a point that is closer than the best one found so far.
-        // The effectiveness of the pruning rule depends on quickly finding a nearby point.
-        // To do this, organize the recursive method so that when there are two possible
-        // subtrees to go down, you always choose the subtree that is on the same side of
-        // the splitting line as the query point as the first subtree to explore—the closest
-        // point found while exploring the first subtree may enable pruning of the second subtree.
-
-        // TODO: nearest
         return this._rootNode.nearest(p, this._rootNode, null);
     }
 
@@ -510,10 +448,10 @@ public class KdTree {
         }
 
         StdOut.println("\nNearest -------------------------------");
-        //Point2D nearestToSearch = new Point2D(0.39, 0.69);
-        KdTree set2 = new KdTree();
-        Point2D nearestToSearch = new Point2D(0, 0);
-        StdOut.println("nearest from " + nearestToSearch + ": " + set2.nearest(nearestToSearch));
+        Point2D nearestToSearch = new Point2D(0.39, 0.69);
+        //KdTree set2 = new KdTree();
+        //Point2D nearestToSearch = new Point2D(0, 0);
+        StdOut.println("nearest from " + nearestToSearch + ": " + set.nearest(nearestToSearch));
 
         //set.draw();
         /*
@@ -560,14 +498,5 @@ public class KdTree {
 
         set.draw();
         */
-    }
-
-    // TODO: DELETE BELOW METHODS ONCE READY ----------------------
-
-    private static boolean IsDebugEnabled = true;
-
-    private static void Debug(String message) {
-        if (IsDebugEnabled)
-            StdOut.println("Debug - " + message);
     }
 }

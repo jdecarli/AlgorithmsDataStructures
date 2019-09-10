@@ -94,9 +94,6 @@ public class PointSET {
         // cycle thru all points
         for (Point2D point : this.internalPointSet) {
             // rectangle contains
-
-            Debug("range | " + point.toString());
-
             if (rect.contains(point))
                 pointsInRange.add(point); // if yes -> add to range set
         }
@@ -113,14 +110,12 @@ public class PointSET {
         if (this.isEmpty())
             return null;
 
-        // TODO: not implemented - check one by one (BF approach)
         Point2D result = new Point2D(0, 0);
         double minimunDistance = 1;
 
         // cycle thru all points
         for (Point2D point : this.internalPointSet) {
             double distance = p.distanceTo(point);
-            Debug("nearest | distance: " + distance);
 
             if (distance < minimunDistance) {
                 minimunDistance = distance;
@@ -172,14 +167,5 @@ public class PointSET {
         //GetAll(set);
 
         set.draw();
-    }
-
-    // TODO: DELETE BELOW METHODS ONCE READY ----------------------
-
-    private static boolean IsDebugEnabled = false;
-
-    private static void Debug(String message) {
-        if (IsDebugEnabled)
-            StdOut.println("Debug - " + message);
     }
 }
